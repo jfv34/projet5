@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <item
+
+        android:id="@+id/menu_activity_main_search"
+        android:icon="@drawable/search"
+        android:title="Rechercher"
+        app:showAsAction="ifRoom">
+    </item>
+
+    <item
+        android:id="@+id/menu_activity_main_more"
+        android:icon="@drawable/more_vert"
+        android:title="Paramètres"
+        app:showAsAction="ifRoom">
+    </item>
+</menu>
