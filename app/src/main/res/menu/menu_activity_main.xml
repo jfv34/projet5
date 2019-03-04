@@ -9,13 +9,25 @@
         android:id="@+id/menu_activity_main_search"
         android:icon="@drawable/search"
         android:title="Rechercher"
-        app:showAsAction="ifRoom">
+        app:showAsAction="always">
     </item>
 
     <item
         android:id="@+id/menu_activity_main_more"
-        android:icon="@drawable/more_vert"
-        android:title="Paramètres"
-        app:showAsAction="ifRoom">
+        android:title="Notification"
+        app:showAsAction="never">
     </item>
+
+    <item
+        android:id="@+id/menu_activity_main_help"
+        android:title="Help"
+        app:showAsAction="never">
+    </item>
+
+    <item
+        android:id="@+id/menu_activity_main_about"
+        android:title="About"
+        app:showAsAction="never">
+    </item>
+
 </menu>

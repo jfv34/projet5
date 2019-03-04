@@ -8,12 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 public class PageFragment extends Fragment {
 
     private static final String KEY_POSITION = "position";
-
-    public PageFragment() {
-    }
 
 
     public static PageFragment newInstance(int position) {
@@ -39,6 +39,10 @@ public class PageFragment extends Fragment {
         textView.setText(text);
         textView.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
 
+        ArrayList articles = new ArrayList();
+        articles.add(new Article(
+                "", "titre 1", new Date(), "", new ArticleCategory("", null)
+        ));
         return result;
     }
 
