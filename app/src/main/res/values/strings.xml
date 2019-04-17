@@ -5,4 +5,15 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="search_query_term">Search query term</string>
+    <string name="begin_date">Begin date</string>
+    <string name="end_date">End date</string>
+    <string name="travel">Travel</string>
+    <string name="sports">Sports</string>
+    <string name="politics">Politics</string>
+    <string name="entrepreneurs">Entrepreneurs</string>
+    <string name="business">Business</string>
+    <string name="arts">Arts</string>
+    <string name="search">Search</string>
+    <string name="enable_notifications_once_per_day">Enable notifications (once per day)</string>
 </resources>

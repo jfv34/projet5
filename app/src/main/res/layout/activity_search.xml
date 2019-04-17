@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/activity_search_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:popupTheme="@style/Theme.AppCompat.Light.NoActionBar"
+            app:title="Search Articles"
+            app:titleTextColor="#ffffff" />
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp">
+
+        <EditText
+            android:id="@+id/activity_search_query"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:hint="@string/search_query_term"
+            android:textColor="#706868"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/activity_search_date_right_txt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:backgroundTint="#706868"
+            android:text="@string/begin_date"
+            app:layout_constraintEnd_toStartOf="@id/activity_search_date_left_txt"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/activity_search_query"
+            app:layout_constraintWidth_percent="0.5" />
+
+        <EditText
+            android:id="@+id/activity_search_date_begin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="01/01/2019"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@id/activity_search_arrowdown_left_bt"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/activity_search_date_right_txt" />
+
+        <ImageButton
+            android:id="@+id/activity_search_arrowdown_left_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:paddingEnd="10sp"
+            app:layout_constraintEnd_toEndOf="@id/activity_search_date_right_txt"
+            app:layout_constraintTop_toBottomOf="@id/activity_search_date_right_txt"
+            app:srcCompat="@drawable/ic_arrow_down"
+            tools:ignore="VectorDrawableCompat" />
+
+        <TextView
+            android:id="@+id/activity_search_date_left_txt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:backgroundTint="#706868"
+            android:text="@string/end_date"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/activity_search_date_right_txt"
+            app:layout_constraintTop_toBottomOf="@id/activity_search_query"
+            app:layout_constraintWidth_percent="0.5" />
+
+        <EditText
+            android:id="@+id/activity_search_date_end"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="01/01/2019"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/activity_search_arrowdown_left_bt"
+            app:layout_constraintTop_toBottomOf="@id/activity_search_date_left_txt" />
+
+        <ImageButton
+            android:id="@+id/activity_search_arrowdown_right_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:layout_constraintEnd_toEndOf="@id/activity_search_date_left_txt"
+            app:layout_constraintTop_toBottomOf="@id/activity_search_date_left_txt"
+            app:srcCompat="@drawable/ic_arrow_down"
+            tools:ignore="VectorDrawableCompat" />
+
+        <CheckBox
+            android:id="@+id/activity_search_checkbox_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:buttonTint="@color/colorPrimary"
+            android:text="@string/arts"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/activity_search_arrowdown_left_bt" />
+
+        <CheckBox
+            android:id="@+id/activity_search_checkbox_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/colorPrimary"
+            android:text="@string/business"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/activity_search_checkbox_1" />
+
+        <CheckBox
+            android:id="@+id/activity_search_checkbox_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/colorPrimary"
+            android:text="@string/entrepreneurs"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/activity_search_checkbox_2" />
+
+        <CheckBox
+            android:id="@+id/activity_search_checkbox_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:buttonTint="@color/colorPrimary"
+            android:text="@string/politics"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/activity_search_arrowdown_left_bt"
+            app:layout_constraintTop_toBottomOf="@id/activity_search_arrowdown_left_bt" />
+
+        <CheckBox
+            android:id="@+id/activity_search_checkbox_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/colorPrimary"
+            android:text="@string/sports"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/activity_search_arrowdown_left_bt"
+            app:layout_constraintTop_toBottomOf="@id/activity_search_checkbox_4" />
+
+        <CheckBox
+            android:id="@+id/activity_search_checkbox_6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/colorPrimary"
+            android:text="@string/travel"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/activity_search_arrowdown_left_bt"
+            app:layout_constraintTop_toBottomOf="@id/activity_search_checkbox_5" />
+
+        <Button
+            android:id="@+id/activity_search_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="@color/colorPrimary"
+            android:text="@string/search"
+            android:textColor="#f1f1f1"
+            android:textSize="17sp"
+            app:layout_constraintTop_toBottomOf="@id/activity_search_checkbox_6" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</LinearLayout>

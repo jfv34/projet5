@@ -3,47 +3,82 @@ package com.vincler.jf.projet5;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Date;
+import com.vincler.jf.projet5.data.NewsService;
+import com.vincler.jf.projet5.models.ArticleListType;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PageFragment extends Fragment {
 
-    private static final String KEY_POSITION = "position";
+    private static final String KEY_ARTICLELISTTYPE = "position";
 
 
-    public static PageFragment newInstance(int position) {
+    public static PageFragment newInstance(ArticleListType type) {
 
         PageFragment fragment = new PageFragment();
         Bundle args = new Bundle();
-        args.putInt(KEY_POSITION, position);
+        args.putInt(KEY_ARTICLELISTTYPE, type.ordinal());
         fragment.setArguments(args);
         return fragment;
     }
 
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View result = inflater.inflate(R.layout.fragment_page, container, false);
-        TextView textView = result.findViewById(R.id.fragment_page_title);
+        final View fragmentView = inflater.inflate(R.layout.fragment_page, container, false);
 
-        int position = 0;
-        if (getArguments() != null) {
-            position = 1 + getArguments().getInt(KEY_POSITION, -1);
+        ArticleListType type = ArticleListType.values()[getArguments().getInt(KEY_ARTICLELISTTYPE)];
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://api.nytimes.com/svc/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        NewsService service = retrofit.create(NewsService.class);
+        Call<ArticlesResponse> call;
+        switch (type) {
+            case BUSINESS:
+                call = service.list();
+                break;
+            case TOP_STORIES:
+                call = service.list();
+                break;
+                default:
+            case MOST_POPULAR:
+                call = service.list();
+                break;
+
         }
-        String text = "Page numéro " + position;
-        textView.setText(text);
-        textView.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        call.enqueue(new Callback<ArticlesResponse>() {
+            @Override
+            public void onResponse(Call<ArticlesResponse> call, Response<ArticlesResponse> response) {
+                ArticlesResponse results = response.body();
 
-        ArrayList articles = new ArrayList();
-        articles.add(new Article(
-                "", "titre 1", new Date(), "", new ArticleCategory("", null)
-        ));
-        return result;
+                final RecyclerView rv = fragmentView.findViewById(R.id.fragment_page_articles);
+                rv.setLayoutManager(new LinearLayoutManager(getContext()));
+
+                rv.setAdapter(new ArticleAdapter(getContext(), results.results));
+            }
+
+            @Override
+            public void onFailure(Call<ArticlesResponse> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+
+
+        return fragmentView;
     }
 
 }

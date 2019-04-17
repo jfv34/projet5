@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#fff">
+
+
+    <ImageView
+        android:id="@+id/item_article_image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/item_article_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.20"
+        app:srcCompat="@drawable/test_logo_android_240x170"
+
+        />
+
+    <TextView
+        android:id="@+id/item_article_category"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="7dp"
+        android:text="Europe > France"
+        android:textColor="#000000"
+        android:textStyle="bold"
+       android:layout_marginLeft="10dp"
+        app:layout_constraintBottom_toTopOf="@id/item_article_title"
+        app:layout_constraintStart_toEndOf="@id/item_article_image" />
+
+    <TextView
+        android:id="@+id/item_article_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="14/03/19"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="25dp"
+        android:id="@+id/item_article_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:maxLines="2"
+        android:text="Android 10.0 Q: What's new and all you need to know about the update"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/item_article_image" />
+</android.support.constraint.ConstraintLayout>

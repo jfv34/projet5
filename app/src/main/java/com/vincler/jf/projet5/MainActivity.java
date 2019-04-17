@@ -1,5 +1,6 @@
 package com.vincler.jf.projet5;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -12,6 +13,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.vincler.jf.projet5.models.ArticleListType;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private Toolbar toolbar;
@@ -21,13 +27,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_main);
 
         configureToolbar();
         configureViewPagerAndTabs();
         configureDrawerLayout();
         configureNavigationView();
+
+       /* ImageButton searchIcon;
+        this.toolbar = findViewById(R.id.activity_main_toolbar);
+        searchIcon = toolbar.findViewById(R.id.menu_activity_main_search);
+        searchIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                startActivity(intent);
+            }
+        });*/
+
     }
+
 
     @Override
 
@@ -46,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         int id = item.getItemId();
 
-        switch (id) {
+        /*switch (id) {
             case R.id.activity_main_drawer_news:
                 break;
             case R.id.activity_main_drawer_profile:
@@ -55,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             default:
                 break;
-        }
+        }*/
 
 
         this.drawerLayout.closeDrawer(GravityCompat.START);
@@ -68,6 +89,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_activity_main_search:
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                startActivity(intent);
+                return true;
+
+            case R.id.menu_activity_main_notification:
+                Intent intent2 = new Intent(MainActivity.this, NotificationsActivity.class);
+                startActivity(intent2);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     private void configureToolbar() {
         this.toolbar = findViewById(R.id.activity_main_toolbar);
@@ -77,7 +115,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void configureViewPagerAndTabs() {
         ViewPager pager = findViewById(R.id.activity_main_viewpager);
-        pager.setAdapter(new PageAdapter(getSupportFragmentManager()));
+        List<ArticleListType> listTypesArticles = new ArrayList<>();
+
+        listTypesArticles.add(ArticleListType.MOST_POPULAR);
+        listTypesArticles.add(ArticleListType.TOP_STORIES);
+        listTypesArticles.add(ArticleListType.BUSINESS);
+
+        pager.setAdapter(new PageAdapter(getSupportFragmentManager(), listTypesArticles));
         TabLayout tabs = findViewById(R.id.activity_main_tabs);
         tabs.setupWithViewPager(pager);
         tabs.setTabMode(TabLayout.MODE_FIXED);

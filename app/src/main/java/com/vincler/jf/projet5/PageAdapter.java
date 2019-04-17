@@ -4,21 +4,27 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-public class PageAdapter extends FragmentPagerAdapter {
+import com.vincler.jf.projet5.models.ArticleListType;
 
-    public PageAdapter(FragmentManager mgr) {
-        super(mgr);
+import java.util.List;
+
+public class PageAdapter extends FragmentPagerAdapter {
+    List<ArticleListType> pages;
+
+    public PageAdapter(FragmentManager fm, List<ArticleListType> pages) {
+        super(fm);
+        this.pages=pages;
     }
 
 
     @Override
     public int getCount() {
-        return (3);
+        return pages.size();
     }
 
     @Override
     public Fragment getItem(int position) {
-        return (PageFragment.newInstance(position));
+        return (PageFragment.newInstance(pages.get(position)));
     }
 
     @Override

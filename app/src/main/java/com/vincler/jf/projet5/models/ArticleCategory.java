@@ -1,4 +1,4 @@
-package com.vincler.jf.projet5;
+package com.vincler.jf.projet5.models;
 
 public class ArticleCategory {
     String name;
