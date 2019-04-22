@@ -1,13 +1,15 @@
 package com.vincler.jf.projet5.models;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 import java.util.List;
 
-public class Article {
+public class Article extends Listable {
+
     @SerializedName("multimedia")
-    public List<ArticleMedia> medias;
+    public List<ArticleMedia> multimedia;
 
     @SerializedName("title")
     public String title;
@@ -21,11 +23,17 @@ public class Article {
     @SerializedName("section")
     public String category;
 
-    public Article(List<ArticleMedia> medias, String title, Date date, String subCategory, String category) {
-        this.medias = medias;
-        this.title = title;
-        this.date = date;
-        this.subCategory = subCategory;
-        this.category = category;
+    @SerializedName("geo_facet")
+    public List<String> test;
+
+    @Override
+    public String getCover() {
+        if (multimedia !=null && multimedia.size() > 0) {
+            String imageStr = multimedia.get(0).url;
+         return imageStr;
+        }
+        return null;
     }
+
+
 }

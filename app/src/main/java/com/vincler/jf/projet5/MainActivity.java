@@ -117,8 +117,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ViewPager pager = findViewById(R.id.activity_main_viewpager);
         List<ArticleListType> listTypesArticles = new ArrayList<>();
 
-        listTypesArticles.add(ArticleListType.MOST_POPULAR);
         listTypesArticles.add(ArticleListType.TOP_STORIES);
+        listTypesArticles.add(ArticleListType.MOST_POPULAR);
         listTypesArticles.add(ArticleListType.BUSINESS);
 
         pager.setAdapter(new PageAdapter(getSupportFragmentManager(), listTypesArticles));

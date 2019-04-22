@@ -6,9 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.vincler.jf.projet5.models.Article;
+import com.vincler.jf.projet5.models.Listable;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -17,13 +20,13 @@ import java.util.Locale;
 
 public class ArticleAdapter extends RecyclerView.Adapter {
 
-    private List<Article> articles;
+    private List<Listable> listable;
     private Context context;
     private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE);
 
-    public ArticleAdapter(Context context, List<Article> articles) {
+    public ArticleAdapter(Context context, List<Listable> listable) {
         this.context = context;
-        this.articles = articles;
+        this.listable = listable;
     }
 
     @Override
@@ -36,12 +39,12 @@ public class ArticleAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
 
-        ((ViewHolder) viewHolder).bind(articles.get(i));
+        ((ViewHolder) viewHolder).bind(listable.get(i));
     }
 
     @Override
     public int getItemCount() {
-        return articles.size() > 20 ? 20 : articles.size();
+        return listable.size() > 20 ? 20 : listable.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -55,24 +58,29 @@ public class ArticleAdapter extends RecyclerView.Adapter {
 
         }
 
-        public void bind(final Article data) {
+        public void bind(final Listable data) {
 
             TextView categoryTv = itemView.findViewById(R.id.item_article_category);
             TextView dateTv = itemView.findViewById(R.id.item_article_date);
             TextView titleTv = itemView.findViewById(R.id.item_article_title);
+            ImageView imageView = itemView.findViewById(R.id.item_article_image);
 
-
-            String date = dateFormat.format(data.date);
+//            String date = dateFormat.format(data.date);
             String title = data.title;
 
+                Glide.with(context).load(data.getCover()).into(imageView);
+
+
+
             String categoryAndsubCategory;
-            if(data.subCategory.isEmpty()){
-                categoryAndsubCategory = data.category;}
-            else {
-            categoryAndsubCategory = data.category + " > " + data.subCategory;}
+            if (data.subCategory.isEmpty()) {
+                categoryAndsubCategory = data.category;
+            } else {
+                categoryAndsubCategory = data.category + " > " + data.subCategory;
+            }
 
             categoryTv.setText(categoryAndsubCategory);
-            dateTv.setText(date);
+            dateTv.setText(data.getDateString());
             titleTv.setText(title);
 
 

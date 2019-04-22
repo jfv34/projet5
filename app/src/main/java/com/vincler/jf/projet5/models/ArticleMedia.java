@@ -1,12 +1,14 @@
 package com.vincler.jf.projet5.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ArticleMedia {
 
+    @SerializedName("url")
+    public String url;
 
-    String url;
+    @SerializedName("format")
+    public String format;
 
-    public ArticleMedia(String url) {
-        this.url = url;
 
-    }
 }

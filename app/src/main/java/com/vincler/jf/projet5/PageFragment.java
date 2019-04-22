@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.vincler.jf.projet5.data.NewsService;
 import com.vincler.jf.projet5.models.ArticleListType;
+import com.vincler.jf.projet5.models.ArticlesResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,15 +49,15 @@ public class PageFragment extends Fragment {
         NewsService service = retrofit.create(NewsService.class);
         Call<ArticlesResponse> call;
         switch (type) {
-            case BUSINESS:
-                call = service.list();
-                break;
             case TOP_STORIES:
-                call = service.list();
+                call = service.listTopstories();
                 break;
-                default:
             case MOST_POPULAR:
-                call = service.list();
+                call = service.listMostPopular();
+                break;
+            default:
+            case BUSINESS:
+                call = service.listMostPopular(); // À MODIFIER
                 break;
 
         }
