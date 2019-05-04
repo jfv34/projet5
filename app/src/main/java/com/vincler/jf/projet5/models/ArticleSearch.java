@@ -5,21 +5,21 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 import java.util.List;
 
-public class Article extends Listable {
+public class ArticleSearch extends Listable {
 
     @SerializedName("multimedia")
     public List<ArticleMedia> multimedia;
 
-    @SerializedName("title")
+    @SerializedName("snippet")
     public String title;
 
-    @SerializedName("published_date")
+    @SerializedName("pub_date")
     public Date date;
 
-    @SerializedName("subsection")
+    @SerializedName("subsection_name")
     public String subCategory;
 
-    @SerializedName("section")
+    @SerializedName("section_name")
     public String category;
 
     @Override

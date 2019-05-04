@@ -19,10 +19,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class PageFragment extends Fragment {
+public class PageFragment<T extends ArticlesResponse> extends Fragment {
 
     private static final String KEY_ARTICLELISTTYPE = "position";
-
 
     public static PageFragment newInstance(ArticleListType type) {
 
@@ -33,53 +32,47 @@ public class PageFragment extends Fragment {
         return fragment;
     }
 
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View fragmentView = inflater.inflate(R.layout.fragment_page, container, false);
 
         ArticleListType type = ArticleListType.values()[getArguments().getInt(KEY_ARTICLELISTTYPE)];
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.nytimes.com/svc/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-
         NewsService service = retrofit.create(NewsService.class);
-        Call<ArticlesResponse> call;
+        Call<T> call;
         switch (type) {
             case TOP_STORIES:
-                call = service.listTopstories();
+                call = (Call<T>) service.listTopstories();
                 break;
             case MOST_POPULAR:
-                call = service.listMostPopular();
+                call = (Call<T>) service.listMostPopular();
                 break;
             default:
             case BUSINESS:
-                call = service.listMostPopular(); // À MODIFIER
+                call = (Call<T>) service.listBusiness();
                 break;
-
         }
-        call.enqueue(new Callback<ArticlesResponse>() {
+        call.enqueue(new Callback<T>() {
             @Override
-            public void onResponse(Call<ArticlesResponse> call, Response<ArticlesResponse> response) {
-                ArticlesResponse results = response.body();
+            public void onResponse(Call<T> call, Response<T> response) {
 
+                T results = response.body();
                 final RecyclerView rv = fragmentView.findViewById(R.id.fragment_page_articles);
                 rv.setLayoutManager(new LinearLayoutManager(getContext()));
-
-                rv.setAdapter(new ArticleAdapter(getContext(), results.results));
+                if (results != null) {
+                    rv.setAdapter(new ArticleAdapter(getContext(), results.getResults()));
+                }
             }
 
             @Override
-            public void onFailure(Call<ArticlesResponse> call, Throwable t) {
+            public void onFailure(Call<T> call, Throwable t) {
                 t.printStackTrace();
             }
         });
-
-
         return fragmentView;
     }
-
 }

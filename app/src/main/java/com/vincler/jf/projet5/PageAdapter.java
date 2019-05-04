@@ -3,12 +3,14 @@ package com.vincler.jf.projet5;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 
 import com.vincler.jf.projet5.models.ArticleListType;
 
 import java.util.List;
 
 public class PageAdapter extends FragmentPagerAdapter {
+
     List<ArticleListType> pages;
 
     public PageAdapter(FragmentManager fm, List<ArticleListType> pages) {

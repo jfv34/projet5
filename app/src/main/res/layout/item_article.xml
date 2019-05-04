@@ -23,11 +23,11 @@
         android:id="@+id/item_article_category"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:padding="7dp"
         android:text="Europe > France"
         android:textColor="#000000"
         android:textStyle="bold"
-       android:layout_marginLeft="10dp"
         app:layout_constraintBottom_toTopOf="@id/item_article_title"
         app:layout_constraintStart_toEndOf="@id/item_article_image" />
 
@@ -42,14 +42,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="25dp"
         android:id="@+id/item_article_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="25dp"
         android:maxLines="2"
         android:text="Android 10.0 Q: What's new and all you need to know about the update"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/item_article_image" />

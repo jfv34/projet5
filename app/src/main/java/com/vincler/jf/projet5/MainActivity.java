@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,22 +30,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         setContentView(R.layout.activity_main);
-
         configureToolbar();
         configureViewPagerAndTabs();
         configureDrawerLayout();
-        configureNavigationView();
 
-       /* ImageButton searchIcon;
-        this.toolbar = findViewById(R.id.activity_main_toolbar);
-        searchIcon = toolbar.findViewById(R.id.menu_activity_main_search);
-        searchIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                startActivity(intent);
-            }
-        });*/
 
     }
 
@@ -134,8 +122,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
     }
 
-    private void configureNavigationView() {
-        //this.navigationView = findViewById(R.id.activity_main_nav_view);
-        //navigationView.setNavigationItemSelectedListener(this);
-    }
 }

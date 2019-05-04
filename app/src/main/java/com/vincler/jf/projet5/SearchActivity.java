@@ -27,16 +27,16 @@ public class SearchActivity extends AppCompatActivity {
 
     private String gettingQuery() {
 
-      Button button = findViewById(R.id.activity_search_button);
-      String query="";
+        String txt;
+        Button button = findViewById(R.id.activity_search_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 EditText editText = findViewById(R.id.activity_search_query);
-                //query= editText.getText().toString();
+                // txt = editText.getText().toString();
             }
         });
-        return query;
+        return ""; // return txt;
 
     }
 
