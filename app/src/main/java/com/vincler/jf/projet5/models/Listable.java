@@ -13,4 +13,6 @@ public abstract class Listable {
 
     public abstract String getSubcategory();
 
+    public abstract String getUrl();
+
 }

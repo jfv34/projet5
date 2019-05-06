@@ -16,4 +16,5 @@
     <string name="arts">Arts</string>
     <string name="search">Search</string>
     <string name="enable_notifications_once_per_day">Enable notifications (once per day)</string>
+    <string name="noExtract">(No extract available)</string>
 </resources>

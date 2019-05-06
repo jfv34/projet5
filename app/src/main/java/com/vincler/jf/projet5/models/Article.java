@@ -22,6 +22,9 @@ public class Article extends Listable {
     @SerializedName("section")
     public String category;
 
+    @SerializedName("url")
+    public String url;
+
     @Override
     public String getCover() {
         if (multimedia != null && multimedia.size() > 0) {
@@ -44,6 +47,10 @@ public class Article extends Listable {
 
     public String getSubcategory() {
         return subCategory;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
 

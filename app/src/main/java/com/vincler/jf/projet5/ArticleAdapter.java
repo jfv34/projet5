@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,6 +28,8 @@ public class ArticleAdapter<T extends Listable> extends RecyclerView.Adapter {
 
         this.context = context;
         this.listable = listable;
+
+
     }
 
     @Override
@@ -35,6 +38,7 @@ public class ArticleAdapter<T extends Listable> extends RecyclerView.Adapter {
 
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_article, viewGroup, false);
         return new ViewHolder(context, view);
+
     }
 
     @Override
@@ -72,17 +76,61 @@ public class ArticleAdapter<T extends Listable> extends RecyclerView.Adapter {
 
 
             String categoryAndsubCategory;
-            if (data.getSubcategory().isEmpty()) {
+
+
+            if (data.getSubcategory() != null && data.getSubcategory().isEmpty()) {
                 categoryAndsubCategory = data.getCategory();
-            } else {
+            } else if (data.getSubcategory() != null && !data.getSubcategory().isEmpty()) {
                 categoryAndsubCategory = data.getCategory() + " > " + data.getSubcategory();
+            } else {
+                categoryAndsubCategory = data.getCategory();
+            }
+
+            String title;
+            if (data.getTitle().isEmpty()) {
+                title = context.getString(R.string.noExtract);
+            } else {
+                title = data.getTitle();
             }
 
             categoryTv.setText(categoryAndsubCategory);
-            dateTv.setText(data.getDate().toString());
-            titleTv.setText(data.getTitle());
+            dateTv.setText(dateFormat.format(data.getDate()));
+            titleTv.setText(title);
+
+            titleTv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DisplayWebView(data.getUrl());
+                }
+            });
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DisplayWebView(data.getUrl());
+                }
+            });
+            categoryTv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DisplayWebView(data.getUrl());
+                }
+            });
+            dateTv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DisplayWebView(data.getUrl());
+                }
+            });
 
 
         }
+    }
+
+    private void DisplayWebView(String url) {
+        WebView webView = new WebView(context);
+
+        // webView = (WebView) findViewById(R.id.webview);
+        webView.loadUrl(url);
+
     }
 }
