@@ -24,7 +24,6 @@ public class PageFragment<T extends ArticlesResponse> extends Fragment {
     private static final String KEY_ARTICLELISTTYPE = "position";
 
     public static PageFragment newInstance(ArticleListType type) {
-
         PageFragment fragment = new PageFragment();
         Bundle args = new Bundle();
         args.putInt(KEY_ARTICLELISTTYPE, type.ordinal());
@@ -39,7 +38,7 @@ public class PageFragment<T extends ArticlesResponse> extends Fragment {
 
         ArticleListType type = ArticleListType.values()[getArguments().getInt(KEY_ARTICLELISTTYPE)];
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.nytimes.com/svc/")
+                .baseUrl("https://api.nytimes.com/svc/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         NewsService service = retrofit.create(NewsService.class);
