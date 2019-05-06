@@ -15,8 +15,6 @@ public interface NewsService {
 
     @GET("search/v2/articlesearch.json?q=business&api-key=jGQidx72NOVdW62AOG2f61ITRG2Gmsbx")
     Call<ArticlesSearchResponse> listBusiness();
-
-
 }
 
 

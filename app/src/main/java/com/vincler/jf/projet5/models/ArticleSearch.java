@@ -25,7 +25,12 @@ public class ArticleSearch extends Listable {
     @Override
     public String getCover() {
         if (multimedia != null && multimedia.size() > 0) {
-            return multimedia.get(0).url;
+            String url = multimedia.get(0).url;
+            if (url.startsWith("https://static01.nyt.com/")) {
+                return url;
+            } else {
+                return "https://static01.nyt.com/" + url;
+            }
         }
         return null;
     }

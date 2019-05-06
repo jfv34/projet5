@@ -3,6 +3,7 @@ package com.vincler.jf.projet5;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,24 +25,18 @@ public class ArticleAdapter<T extends Listable> extends RecyclerView.Adapter {
     private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE);
 
     public ArticleAdapter(Context context, List<T> listable) {
-
         this.context = context;
         this.listable = listable;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-
-
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_article, viewGroup, false);
-        return new ViewHolder(context, view);
+        return new ViewHolder(context, LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_article, viewGroup, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-
         ((ViewHolder) viewHolder).bind(listable.get(i));
-
     }
 
     @Override
@@ -56,23 +51,22 @@ public class ArticleAdapter<T extends Listable> extends RecyclerView.Adapter {
         public ViewHolder(Context context, @NonNull View itemView) {
             super(itemView);
             this.context = context;
-
-
         }
 
         public void bind(final T data) {
-
             TextView categoryTv = itemView.findViewById(R.id.item_article_category);
             TextView dateTv = itemView.findViewById(R.id.item_article_date);
             TextView titleTv = itemView.findViewById(R.id.item_article_title);
             ImageView imageView = itemView.findViewById(R.id.item_article_image);
 
+            String cover = data.getCover();
 
-            Glide.with(context).load(data.getCover()).into(imageView);
+            Log.e("TAG", "cover ->" + cover);
 
+            Glide.with(context).load(cover).into(imageView);
 
             String categoryAndsubCategory;
-            if (data.getSubcategory().isEmpty()) {
+            if (data.getSubcategory() == null || data.getSubcategory().isEmpty()) {
                 categoryAndsubCategory = data.getCategory();
             } else {
                 categoryAndsubCategory = data.getCategory() + " > " + data.getSubcategory();
@@ -81,8 +75,6 @@ public class ArticleAdapter<T extends Listable> extends RecyclerView.Adapter {
             categoryTv.setText(categoryAndsubCategory);
             dateTv.setText(data.getDate().toString());
             titleTv.setText(data.getTitle());
-
-
         }
     }
 }

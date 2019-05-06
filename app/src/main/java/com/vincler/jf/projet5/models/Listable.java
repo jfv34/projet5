@@ -12,5 +12,4 @@ public abstract class Listable {
     public abstract String getCategory();
 
     public abstract String getSubcategory();
-
 }
