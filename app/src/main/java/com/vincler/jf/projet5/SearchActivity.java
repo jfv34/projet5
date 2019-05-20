@@ -1,66 +1,113 @@
 package com.vincler.jf.projet5;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
-public class SearchActivity extends AppCompatActivity {
-    int categoriesSelected[] = new int[6];
+import com.vincler.jf.projet5.data.NewsService;
+import com.vincler.jf.projet5.models.ArticlesResponse;
+import com.vincler.jf.projet5.models.ArticlesSearchResponse;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+public class SearchActivity<T extends ArticlesResponse> extends AppCompatActivity {
+
+    int[] categoriesSelected = new int[6];
+    String dateBegin = "", dateEnd = "", dateFormatAPI = "", dateDisplayed, query = "";
+    String dateBeginFormatApi = "20190101", dateEndFormatAPI = "20190101";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        datePiker();
+        search();
+    }
 
+    private void search() {
         Button searchBt = findViewById(R.id.activity_search_button);
         searchBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String query = gettingQuery();
+                query = gettingQuery();
                 selectCategories();
 
                 StringBuilder txtSearch = new StringBuilder();
-                txtSearch.append("search/v2/articlesearch.json?");
-
+                txtSearch.append("news_desk:(");
 
                 if (categoriesSelected[0] == 1) {
-                    txtSearch.append("q=arts&");
+                    txtSearch.append("\"arts\"");
                 }
                 if (categoriesSelected[1] == 1) {
-                    txtSearch.append("q=business&");
+                    txtSearch.append("\"business\"");
                 }
                 if (categoriesSelected[2] == 1) {
-                    txtSearch.append("q=entrepreneurs&");
+                    txtSearch.append("\"entrepreneurs\"");
                 }
                 if (categoriesSelected[3] == 1) {
-                    txtSearch.append("q=politics&");
+                    txtSearch.append("\"politics\"");
                 }
                 if (categoriesSelected[4] == 1) {
-                    txtSearch.append("q=sports&");
+                    txtSearch.append("\"sports\"");
                 }
                 if (categoriesSelected[5] == 1) {
-                    txtSearch.append("q=travels&");
+                    txtSearch.append("\"travels\"");
                 }
 
-                txtSearch.append("api-key=jGQidx72NOVdW62AOG2f61ITRG2Gmsbx");
+                txtSearch.append(")");
 
+
+                Log.i("TAG-URL", txtSearch.toString());
+
+                HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+                interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+                OkHttpClient.Builder builder = UnsafeOkHttpClient.getUnsafeOkHttpClient().addInterceptor(interceptor);
+
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://api.nytimes.com/svc/")
+                        .client(builder.build())
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+                NewsService service = retrofit.create(NewsService.class);
+
+                service.listSearch(query, txtSearch.toString(), dateBegin, dateEnd).enqueue(new Callback<ArticlesSearchResponse>() {
+                    @Override
+                    public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<ArticlesSearchResponse> call, Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
 
             }
         });
+    }
 
+    private void datePiker() {
         ImageButton leftArrowBt = findViewById(R.id.activity_search_arrowdown_left_bt);
         leftArrowBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog();
-
+                datePiker("LEFT");
             }
         });
 
@@ -68,11 +115,9 @@ public class SearchActivity extends AppCompatActivity {
         rightArrowBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog();
+                datePiker("RIGHT");
             }
         });
-
-
     }
 
     private Void selectCategories() {
@@ -117,21 +162,71 @@ public class SearchActivity extends AppCompatActivity {
         String txt;
         EditText editText = findViewById(R.id.activity_search_query);
         txt = editText.getText().toString();
-
         return txt;
-
     }
 
 
-    private void showDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("This is AlertDialog");
-        AlertDialog dialog = builder.create();
-        dialog.show();
+    private void datePiker(final String position) {
+
+        setContentView(R.layout.datepicker);
+        Button button = findViewById(R.id.datePicker_button);
+        final DatePicker datePicker = findViewById(R.id.datePicker);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String year = "", month = "", day = "";
+                year = String.valueOf(datePicker.getYear());
+                if (datePicker.getMonth() < 9) {
+                    month = "0";
+                }
+                month = month + (datePicker.getMonth() + 1);
+                if (datePicker.getDayOfMonth() < 10) {
+                    day = "0";
+                }
+                day = day + datePicker.getDayOfMonth();
+                dateFormatAPI = year + month + day;
+                dateDisplayed = day + "/" + month + "/" + year;
+
+                setContentView(R.layout.activity_search);
+                TextView beginDateTV = findViewById(R.id.activity_search_date_begin);
+                TextView endDateTV = findViewById(R.id.activity_search_date_end);
+
+                if (position == "LEFT") {
+                    dateBegin = dateDisplayed;
+                    dateBeginFormatApi = dateFormatAPI;
+                }
+                if (position == "RIGHT") {
+                    dateEnd = dateDisplayed;
+                    dateEndFormatAPI = dateFormatAPI;
+                }
+
+                if (dateBegin.isEmpty()) {
+                    dateBegin = dateEnd;
+                    dateBeginFormatApi = dateEndFormatAPI;
+                }
+                if (dateEnd.isEmpty()) {
+                    dateEnd = dateBegin;
+                    dateEndFormatAPI = dateBeginFormatApi;
+                }
+                if (Integer.valueOf(dateBeginFormatApi) > Integer.valueOf(dateEndFormatAPI)) {
+                    dateBegin = dateEnd;
+                    dateBeginFormatApi = dateEndFormatAPI;
+                    Context context = getApplicationContext();
+                    Toast toast = Toast.makeText(context, getString(R.string.errorDate1), Toast.LENGTH_LONG);
+                    toast.show();
+                }
+
+
+                beginDateTV.setText(dateBegin);
+                endDateTV.setText(dateEnd);
+
+                datePiker();
+                search();
+
+            }
+        });
+
+
     }
-
-
 }
-
-
-

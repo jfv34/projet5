@@ -6,6 +6,14 @@ import java.util.Date;
 import java.util.List;
 
 public class Article extends Listable {
+    public Article(List<ArticleMedia> multimedia, String title, Date date, String subCategory, String category, String url) {
+        this.multimedia = multimedia;
+        this.title = title;
+        this.date = date;
+        this.subCategory = subCategory;
+        this.category = category;
+        this.url = url;
+    }
 
     @SerializedName("multimedia")
     public List<ArticleMedia> multimedia;

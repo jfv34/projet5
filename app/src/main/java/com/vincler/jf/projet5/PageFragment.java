@@ -13,6 +13,7 @@ import com.vincler.jf.projet5.data.NewsService;
 import com.vincler.jf.projet5.models.ArticleListType;
 import com.vincler.jf.projet5.models.ArticlesResponse;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -24,7 +25,6 @@ public class PageFragment<T extends ArticlesResponse> extends Fragment {
     private static final String KEY_ARTICLELISTTYPE = "position";
 
     public static PageFragment newInstance(ArticleListType type) {
-
         PageFragment fragment = new PageFragment();
         Bundle args = new Bundle();
         args.putInt(KEY_ARTICLELISTTYPE, type.ordinal());
@@ -38,8 +38,13 @@ public class PageFragment<T extends ArticlesResponse> extends Fragment {
         final View fragmentView = inflater.inflate(R.layout.fragment_page, container, false);
 
         final ArticleListType type = ArticleListType.values()[getArguments().getInt(KEY_ARTICLELISTTYPE)];
+
+
+        OkHttpClient.Builder builder = UnsafeOkHttpClient.getUnsafeOkHttpClient();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.nytimes.com/svc/")
+                .client(builder.build())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         NewsService service = retrofit.create(NewsService.class);
