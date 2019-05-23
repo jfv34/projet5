@@ -86,7 +86,7 @@ public class SearchActivity<T extends ArticlesResponse> extends AppCompatActivit
                         .build();
                 NewsService service = retrofit.create(NewsService.class);
 
-                service.listSearch(query, txtSearch.toString(), dateBegin, dateEnd).enqueue(new Callback<ArticlesSearchResponse>() {
+                service.listSearch(query, txtSearch.toString(), dateBeginFormatApi, dateEndFormatAPI).enqueue(new Callback<ArticlesSearchResponse>() {
                     @Override
                     public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
 
