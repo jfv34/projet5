@@ -19,4 +19,7 @@
     <string name="noExtract">(No extract available)</string>
     <string name="set">Set</string>
     <string name="errorDate1">La date de début doit être inférieure à la date de fin</string>
+    <string name="enterAtLeastOneKeyWord">Inscrire au moins un mot-clef</string>
+    <string name="badFormatDate">Mauvais format de date</string>
+    <string name="cat_gories">Catégories</string>
 </resources>

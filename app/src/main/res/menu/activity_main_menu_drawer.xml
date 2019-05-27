@@ -7,24 +7,41 @@
     tools:showIn="navigation_view">
 
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/activity_main_drawer_news"
-            android:icon="@drawable/ic_icon_1"
-            android:title="Fil d'actualité" />
-    </group>
-    <item android:title="Configuration">
+    <item android:title="@string/cat_gories">
         <menu>
             <group android:checkableBehavior="single">
                 <item
-                    android:id="@+id/activity_main_drawer_profile"
+                    android:id="@+id/activity_main_drawer_1"
                     android:icon="@drawable/ic_icon2"
 
-                    android:title="Profil" />
+                    android:title="@string/arts" />
                 <item
-                    android:id="@+id/activity_main_drawer_settings"
-                    android:icon="@drawable/ic_icon_3"
-                    android:title="Paramètres" />
+                    android:id="@+id/activity_main_drawer_2"
+                    android:icon="@drawable/ic_icon2"
+                    android:title="@string/business" />
+
+                <item
+                    android:id="@+id/activity_main_drawer_3"
+                    android:icon="@drawable/ic_icon2"
+
+                    android:title="@string/entrepreneurs" />
+                <item
+                    android:id="@+id/activity_main_drawer_4"
+                    android:icon="@drawable/ic_icon2"
+
+                    android:title="@string/politics" />
+                <item
+                    android:id="@+id/activity_main_drawer_5"
+                    android:icon="@drawable/ic_icon2"
+
+                    android:title="@string/sports" />
+                <item
+                    android:id="@+id/activity_main_drawer_6"
+                    android:icon="@drawable/ic_icon2"
+
+                    android:title="@string/travel" />
+
+
             </group>
         </menu>
     </item>

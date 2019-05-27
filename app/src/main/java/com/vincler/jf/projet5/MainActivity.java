@@ -55,16 +55,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         int id = item.getItemId();
 
-        /*switch (id) {
-            case R.id.activity_main_drawer_news:
+        switch (id) {
+            case R.id.activity_main_drawer_1:
                 break;
-            case R.id.activity_main_drawer_profile:
+            case R.id.activity_main_drawer_2:
                 break;
-            case R.id.activity_main_drawer_settings:
+            case R.id.activity_main_drawer_3:
                 break;
             default:
                 break;
-        }*/
+        }
 
 
         this.drawerLayout.closeDrawer(GravityCompat.START);
@@ -120,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
     }
 
 }

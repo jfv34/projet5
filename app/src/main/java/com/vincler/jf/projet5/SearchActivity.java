@@ -1,16 +1,16 @@
 package com.vincler.jf.projet5;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.text.Editable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.vincler.jf.projet5.data.NewsService;
@@ -25,84 +25,94 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class SearchActivity<T extends ArticlesResponse> extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity {
 
-    int[] categoriesSelected = new int[6];
+    public static Response<ArticlesSearchResponse> resultSearch;
+    private Context context;
     String dateBegin = "", dateEnd = "", dateFormatAPI = "", dateDisplayed, query = "";
     String dateBeginFormatApi = "20190101", dateEndFormatAPI = "20190101";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        datePiker();
+        datePikerButton();
         search();
     }
 
     private void search() {
+
         Button searchBt = findViewById(R.id.activity_search_button);
         searchBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 query = gettingQuery();
-                selectCategories();
 
-                StringBuilder txtSearch = new StringBuilder();
-                txtSearch.append("news_desk:(");
+                EditText beginDateET = findViewById(R.id.activity_search_date_begin);
+                EditText endDateET = findViewById(R.id.activity_search_date_end);
+                dateBeginFormatApi = formatDate(beginDateET.getText());
+                dateEndFormatAPI = formatDate(endDateET.getText());
+                if (dateBeginFormatApi.equals("bad_date") | dateEndFormatAPI.equals("bad_date")) {
+                    toast(R.string.badFormatDate);
+                } else {
 
-                if (categoriesSelected[0] == 1) {
-                    txtSearch.append("\"arts\"");
-                }
-                if (categoriesSelected[1] == 1) {
-                    txtSearch.append("\"business\"");
-                }
-                if (categoriesSelected[2] == 1) {
-                    txtSearch.append("\"entrepreneurs\"");
-                }
-                if (categoriesSelected[3] == 1) {
-                    txtSearch.append("\"politics\"");
-                }
-                if (categoriesSelected[4] == 1) {
-                    txtSearch.append("\"sports\"");
-                }
-                if (categoriesSelected[5] == 1) {
-                    txtSearch.append("\"travels\"");
-                }
+                    if (query.isEmpty()) {
+                        toast(R.string.enterAtLeastOneKeyWord);
+                    } else {
+                        String categories = selectCategories();
 
-                txtSearch.append(")");
+                        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+                        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+                        OkHttpClient.Builder builder = UnsafeOkHttpClient.getUnsafeOkHttpClient().addInterceptor(interceptor);
 
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl("http://api.nytimes.com/svc/")
+                                .client(builder.build())
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+                        final NewsService service = retrofit.create(NewsService.class);
+                        service.listSearch(query, categories, dateBeginFormatApi, dateEndFormatAPI).enqueue(new Callback<ArticlesSearchResponse>() {
+                            @Override
+                            public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
 
-                Log.i("TAG-URL", txtSearch.toString());
+                                resultSearch = response;
+                                context = SearchActivity.this;
+                                Intent intent = new Intent(context, ResultSearchActivity.class);
+                                context.startActivity(intent);
+                            }
 
-                HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-                interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-                OkHttpClient.Builder builder = UnsafeOkHttpClient.getUnsafeOkHttpClient().addInterceptor(interceptor);
-
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("http://api.nytimes.com/svc/")
-                        .client(builder.build())
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-                NewsService service = retrofit.create(NewsService.class);
-
-                service.listSearch(query, txtSearch.toString(), dateBeginFormatApi, dateEndFormatAPI).enqueue(new Callback<ArticlesSearchResponse>() {
-                    @Override
-                    public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
-
+                            @Override
+                            public void onFailure(Call<ArticlesSearchResponse> call, Throwable t) {
+                                t.printStackTrace();
+                            }
+                        });
                     }
-
-                    @Override
-                    public void onFailure(Call<ArticlesSearchResponse> call, Throwable t) {
-                        t.printStackTrace();
-                    }
-                });
-
+                }
             }
         });
     }
 
-    private void datePiker() {
+    private String formatDate(Editable editable) {
+
+        String textDate = editable.toString();
+        if (textDate.length() != 10) {
+            return "bad_date";
+        }
+        if (!textDate.substring(2, 3).equals("/") | !textDate.substring(5, 6).equals("/")) {
+            return "bad_date";
+
+        }
+        return textDate.substring(6, 10) + textDate.substring(3, 5) + textDate.substring(0, 2);
+    }
+
+    public void toast(int text) {
+        context = getApplicationContext();
+        Toast.makeText(context, context.getString(text), Toast.LENGTH_SHORT).show();
+    }
+
+    private void datePikerButton() {
         ImageButton leftArrowBt = findViewById(R.id.activity_search_arrowdown_left_bt);
         leftArrowBt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,7 +130,7 @@ public class SearchActivity<T extends ArticlesResponse> extends AppCompatActivit
         });
     }
 
-    private Void selectCategories() {
+    public String selectCategories() {
 
         final CheckBox arts_check = findViewById(R.id.activity_search_checkbox_1);
         final CheckBox business_check = findViewById(R.id.activity_search_checkbox_2);
@@ -130,34 +140,40 @@ public class SearchActivity<T extends ArticlesResponse> extends AppCompatActivit
         final CheckBox travels_check = findViewById(R.id.activity_search_checkbox_6);
 
 
-        for (int i = 0; i < 5; i++) {
-            categoriesSelected[i] = 0;
-        }
+        StringBuilder txtSearch = new StringBuilder();
+        txtSearch.append("news_desk:(");
 
         if (arts_check.isChecked()) {
-            categoriesSelected[0] = 1;
+            txtSearch.append("\"arts\"");
         }
         if (business_check.isChecked()) {
-            categoriesSelected[1] = 1;
+            txtSearch.append("\"business\"");
         }
         if (entrepreneurs_check.isChecked()) {
-            categoriesSelected[2] = 1;
+            txtSearch.append("\"entrepreneurs\"");
         }
         if (politics_check.isChecked()) {
-            categoriesSelected[3] = 1;
+            txtSearch.append("\"politics\"");
         }
         if (sports_check.isChecked()) {
-            categoriesSelected[4] = 1;
+            txtSearch.append("\"sports\"");
         }
         if (travels_check.isChecked()) {
-            categoriesSelected[5] = 1;
+            txtSearch.append("\"travels\"");
         }
 
+        txtSearch.append(")");
 
-        return null;
+        // if no categories selected
+        if (txtSearch.substring(txtSearch.length() - 2) == "(") {
+            txtSearch.delete(txtSearch.length() - 1, txtSearch.length());
+            txtSearch.append("\"\")");
+        }
+
+        return txtSearch.toString();
     }
 
-    private String gettingQuery() {
+    public String gettingQuery() {
 
         String txt;
         EditText editText = findViewById(R.id.activity_search_query);
@@ -168,6 +184,7 @@ public class SearchActivity<T extends ArticlesResponse> extends AppCompatActivit
 
     private void datePiker(final String position) {
 
+        query = gettingQuery();   // save query before change view
         setContentView(R.layout.datepicker);
         Button button = findViewById(R.id.datePicker_button);
         final DatePicker datePicker = findViewById(R.id.datePicker);
@@ -189,8 +206,10 @@ public class SearchActivity<T extends ArticlesResponse> extends AppCompatActivit
                 dateDisplayed = day + "/" + month + "/" + year;
 
                 setContentView(R.layout.activity_search);
-                TextView beginDateTV = findViewById(R.id.activity_search_date_begin);
-                TextView endDateTV = findViewById(R.id.activity_search_date_end);
+
+                EditText editText = findViewById(R.id.activity_search_query);
+                editText.setText(query);
+
 
                 if (position == "LEFT") {
                     dateBegin = dateDisplayed;
@@ -212,16 +231,15 @@ public class SearchActivity<T extends ArticlesResponse> extends AppCompatActivit
                 if (Integer.valueOf(dateBeginFormatApi) > Integer.valueOf(dateEndFormatAPI)) {
                     dateBegin = dateEnd;
                     dateBeginFormatApi = dateEndFormatAPI;
-                    Context context = getApplicationContext();
-                    Toast toast = Toast.makeText(context, getString(R.string.errorDate1), Toast.LENGTH_LONG);
-                    toast.show();
+                    toast(R.string.errorDate1);
                 }
 
+                EditText beginDateET = findViewById(R.id.activity_search_date_begin);
+                EditText endDateET = findViewById(R.id.activity_search_date_end);
+                beginDateET.setText(dateBegin);
+                endDateET.setText(dateEnd);
 
-                beginDateTV.setText(dateBegin);
-                endDateTV.setText(dateEnd);
-
-                datePiker();
+                datePikerButton();
                 search();
 
             }
