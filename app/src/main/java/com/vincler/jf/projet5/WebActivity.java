@@ -20,9 +20,6 @@ public class WebActivity extends AppCompatActivity {
 
 
         WebView webView = findViewById(R.id.activity_webview_webview);
-
-
-        Log.i("TAG_URL ", url);
         webView.loadUrl(url);
 
 

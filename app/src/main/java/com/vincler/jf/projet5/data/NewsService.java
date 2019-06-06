@@ -21,9 +21,11 @@ public interface NewsService {
     Call<ArticlesSearchResponse> listSearch(@Query("q") String q,
                                             @Query("fq") String fq,
                                             @Query("begin_date") String beginDate,
-                                            @Query("end_date") String endDate
-    );
+                                            @Query("end_date") String endDate);
 
+
+    @GET("search/v2/articlesearch.json?api-key=jGQidx72NOVdW62AOG2f61ITRG2Gmsbx")
+    Call<ArticlesSearchResponse> listCategorySearch(@Query("fq") String fq);
 
 }
 

@@ -18,8 +18,9 @@ android {
     }
 }
 
-repositories {            // for Bumptech-Glide
-    mavenCentral()
+repositories {
+    mavenCentral()           // for Bumptech-Glide
+
     google()
 }
 
@@ -38,6 +39,9 @@ dependencies {
    /* repositories { jcenter() }
     dependencies { testCompile "org.mockito:mockito-core:2.+" }*/
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
+    1
+
+    implementation 'android.arch.work:work-runtime:1.0.1'
     
 
 

@@ -1,5 +1,6 @@
 package com.vincler.jf.projet5;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -13,15 +14,27 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.vincler.jf.projet5.data.NewsService;
 import com.vincler.jf.projet5.models.ArticleListType;
+import com.vincler.jf.projet5.models.ArticlesSearchResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static Response<ArticlesSearchResponse> resultSearch;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
 
 
     @Override
@@ -33,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         configureToolbar();
         configureViewPagerAndTabs();
         configureDrawerLayout();
+        configureNavigationView();
 
 
     }
@@ -52,18 +66,60 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public boolean onNavigationItemSelected(MenuItem item) {
-
+        String category = "";
         int id = item.getItemId();
-
         switch (id) {
             case R.id.activity_main_drawer_1:
+                category = "art";
                 break;
             case R.id.activity_main_drawer_2:
+                category = "business";
                 break;
             case R.id.activity_main_drawer_3:
+                category = "entrepreneurs";
+                break;
+            case R.id.activity_main_drawer_4:
+                category = "politics";
+                break;
+            case R.id.activity_main_drawer_5:
+                category = "sports";
+                break;
+            case R.id.activity_main_drawer_6:
+                category = "travel";
                 break;
             default:
                 break;
+        }
+        if (!category.isEmpty()) {
+
+
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            OkHttpClient.Builder builder = UnsafeOkHttpClient.getUnsafeOkHttpClient().addInterceptor(interceptor);
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://api.nytimes.com/svc/")
+                    .client(builder.build())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            final NewsService service = retrofit.create(NewsService.class);
+            service.listCategorySearch(category).enqueue(new Callback<ArticlesSearchResponse>() {
+                @Override
+                public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
+
+                    resultSearch = response;
+                    Context context = MainActivity.this;
+                    Intent intent = new Intent(context, ResultSearchActivity.class);
+                    intent.putExtra("source","MainActivity");
+                    context.startActivity(intent);
+                }
+
+                @Override
+                public void onFailure(Call<ArticlesSearchResponse> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+
         }
 
 
@@ -121,6 +177,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+
+    }
+
+    private void configureNavigationView() {
+        this.navigationView = findViewById(R.id.activity_main_nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
 }

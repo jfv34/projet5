@@ -1,5 +1,6 @@
 package com.vincler.jf.projet5;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,8 +15,11 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.vincler.jf.projet5.data.NewsService;
-import com.vincler.jf.projet5.models.ArticlesResponse;
 import com.vincler.jf.projet5.models.ArticlesSearchResponse;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -28,16 +32,24 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SearchActivity extends AppCompatActivity {
 
     public static Response<ArticlesSearchResponse> resultSearch;
-    private Context context;
+
+    final String dateTodayFormatAPI = dateToday();
+    Context context;
     String dateBegin = "", dateEnd = "", dateFormatAPI = "", dateDisplayed, query = "";
-    String dateBeginFormatApi = "20190101", dateEndFormatAPI = "20190101";
+    String dateBeginFormatAPI = "", dateEndFormatAPI = "", categories = "";
+
+
+    private String dateToday() {
+        Date date = new Date();
+        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+        return dateFormat.format(date);
+    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-
         datePikerButton();
         search();
     }
@@ -52,42 +64,47 @@ public class SearchActivity extends AppCompatActivity {
 
                 EditText beginDateET = findViewById(R.id.activity_search_date_begin);
                 EditText endDateET = findViewById(R.id.activity_search_date_end);
-                dateBeginFormatApi = formatDate(beginDateET.getText());
+                dateBeginFormatAPI = formatDate(beginDateET.getText());
                 dateEndFormatAPI = formatDate(endDateET.getText());
-                if (dateBeginFormatApi.equals("bad_date") | dateEndFormatAPI.equals("bad_date")) {
+                if (dateBeginFormatAPI.equals("bad_date") | dateEndFormatAPI.equals("bad_date")) {
                     toast(R.string.badFormatDate);
                 } else {
 
                     if (query.isEmpty()) {
                         toast(R.string.enterAtLeastOneKeyWord);
                     } else {
-                        String categories = selectCategories();
+                        categories = selectCategories();
 
-                        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-                        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-                        OkHttpClient.Builder builder = UnsafeOkHttpClient.getUnsafeOkHttpClient().addInterceptor(interceptor);
+                        if (categories.equals("news_desk:()")) {
+                            toast(R.string.checkAtLeastOneCategory);
+                        } else {
+                            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+                            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+                            OkHttpClient.Builder builder = UnsafeOkHttpClient.getUnsafeOkHttpClient().addInterceptor(interceptor);
 
-                        Retrofit retrofit = new Retrofit.Builder()
-                                .baseUrl("http://api.nytimes.com/svc/")
-                                .client(builder.build())
-                                .addConverterFactory(GsonConverterFactory.create())
-                                .build();
-                        final NewsService service = retrofit.create(NewsService.class);
-                        service.listSearch(query, categories, dateBeginFormatApi, dateEndFormatAPI).enqueue(new Callback<ArticlesSearchResponse>() {
-                            @Override
-                            public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
+                            Retrofit retrofit = new Retrofit.Builder()
+                                    .baseUrl("http://api.nytimes.com/svc/")
+                                    .client(builder.build())
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .build();
+                            final NewsService service = retrofit.create(NewsService.class);
+                            service.listSearch(query, categories, dateBeginFormatAPI, dateEndFormatAPI).enqueue(new Callback<ArticlesSearchResponse>() {
+                                @Override
+                                public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
 
-                                resultSearch = response;
-                                context = SearchActivity.this;
-                                Intent intent = new Intent(context, ResultSearchActivity.class);
-                                context.startActivity(intent);
-                            }
+                                    resultSearch = response;
+                                    context = SearchActivity.this;
+                                    Intent intent = new Intent(context, ResultSearchActivity.class);
+                                    intent.putExtra("source", "SearchActivity");
+                                    context.startActivity(intent);
+                                }
 
-                            @Override
-                            public void onFailure(Call<ArticlesSearchResponse> call, Throwable t) {
-                                t.printStackTrace();
-                            }
-                        });
+                                @Override
+                                public void onFailure(Call<ArticlesSearchResponse> call, Throwable t) {
+                                    t.printStackTrace();
+                                }
+                            });
+                        }
                     }
                 }
             }
@@ -97,6 +114,9 @@ public class SearchActivity extends AppCompatActivity {
     private String formatDate(Editable editable) {
 
         String textDate = editable.toString();
+        if (textDate.isEmpty()) {
+            return "";
+        }
         if (textDate.length() != 10) {
             return "bad_date";
         }
@@ -109,7 +129,7 @@ public class SearchActivity extends AppCompatActivity {
 
     public void toast(int text) {
         context = getApplicationContext();
-        Toast.makeText(context, context.getString(text), Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, context.getString(text), Toast.LENGTH_LONG).show();
     }
 
     private void datePikerButton() {
@@ -164,12 +184,6 @@ public class SearchActivity extends AppCompatActivity {
 
         txtSearch.append(")");
 
-        // if no categories selected
-        if (txtSearch.substring(txtSearch.length() - 2) == "(") {
-            txtSearch.delete(txtSearch.length() - 1, txtSearch.length());
-            txtSearch.append("\"\")");
-        }
-
         return txtSearch.toString();
     }
 
@@ -211,31 +225,38 @@ public class SearchActivity extends AppCompatActivity {
                 editText.setText(query);
 
 
-                if (position == "LEFT") {
+                if (position.equals("LEFT")) {
                     dateBegin = dateDisplayed;
-                    dateBeginFormatApi = dateFormatAPI;
+                    dateBeginFormatAPI = dateFormatAPI;
                 }
-                if (position == "RIGHT") {
+                if (position.equals("RIGHT")) {
                     dateEnd = dateDisplayed;
                     dateEndFormatAPI = dateFormatAPI;
                 }
 
-                if (dateBegin.isEmpty()) {
+
+                if (!dateBeginFormatAPI.isEmpty() && !dateEndFormatAPI.isEmpty() && Integer.valueOf(dateBeginFormatAPI) > Integer.valueOf(dateEndFormatAPI)) {
                     dateBegin = dateEnd;
-                    dateBeginFormatApi = dateEndFormatAPI;
-                }
-                if (dateEnd.isEmpty()) {
-                    dateEnd = dateBegin;
-                    dateEndFormatAPI = dateBeginFormatApi;
-                }
-                if (Integer.valueOf(dateBeginFormatApi) > Integer.valueOf(dateEndFormatAPI)) {
-                    dateBegin = dateEnd;
-                    dateBeginFormatApi = dateEndFormatAPI;
+                    dateBeginFormatAPI = dateEndFormatAPI;
                     toast(R.string.errorDate1);
                 }
 
+                if (!dateBeginFormatAPI.isEmpty() && Integer.valueOf(dateBeginFormatAPI) > Integer.valueOf(dateTodayFormatAPI)) {
+                    dateBegin = dateEnd;
+                    dateBeginFormatAPI = dateEndFormatAPI;
+                    toast(R.string.errorDate2);
+                }
+
+                if (!dateEndFormatAPI.isEmpty() && Integer.valueOf(dateEndFormatAPI) > Integer.valueOf(dateTodayFormatAPI)) {
+                    dateEnd = dateBegin;
+                    dateEndFormatAPI = dateBeginFormatAPI;
+                    toast(R.string.errorDate2);
+                }
+
+
                 EditText beginDateET = findViewById(R.id.activity_search_date_begin);
                 EditText endDateET = findViewById(R.id.activity_search_date_end);
+
                 beginDateET.setText(dateBegin);
                 endDateET.setText(dateEnd);
 

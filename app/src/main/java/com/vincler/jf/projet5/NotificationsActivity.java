@@ -1,13 +1,16 @@
 package com.vincler.jf.projet5;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+
+import java.util.concurrent.TimeUnit;
+
 
 public class NotificationsActivity extends SearchActivity {
-
 
 
     boolean notifications = false;
@@ -33,6 +36,9 @@ public class NotificationsActivity extends SearchActivity {
                     } else {
                         categories = selectCategories();
                         notifications = true;
+                        WorkManager.getInstance().enqueue(periodicWorkRequest);
+
+
                     }
 
                 } else {
@@ -41,4 +47,8 @@ public class NotificationsActivity extends SearchActivity {
             }
         });
     }
+
+    final PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationsWorker.class, 16, TimeUnit.MINUTES)
+            .addTag("periodic_work")
+            .build();
 }
