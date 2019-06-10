@@ -19,7 +19,5 @@ public class ArticleListTypeTest {
 
 
 
-    //CharSequence title_1 = PageAdapter.getPageTitle(1);
-
 
 }

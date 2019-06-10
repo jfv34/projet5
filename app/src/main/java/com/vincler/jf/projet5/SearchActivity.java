@@ -1,7 +1,5 @@
 package com.vincler.jf.projet5;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,9 +15,8 @@ import android.widget.Toast;
 import com.vincler.jf.projet5.data.NewsService;
 import com.vincler.jf.projet5.models.ArticlesSearchResponse;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Locale;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -31,85 +28,46 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SearchActivity extends AppCompatActivity {
 
-    public static Response<ArticlesSearchResponse> resultSearch;
-
-    final String dateTodayFormatAPI = dateToday();
-    Context context;
-    String dateBegin = "", dateEnd = "", dateFormatAPI = "", dateDisplayed, query = "";
-    String dateBeginFormatAPI = "", dateEndFormatAPI = "", categories = "";
-
-
-    private String dateToday() {
-        Date date = new Date();
-        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-        return dateFormat.format(date);
-    }
+    SearchActivityPresenter presenter = new SearchActivityPresenter();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        datePikerButton();
-        search();
-    }
 
-    private void search() {
+        ImageButton leftArrowBt = findViewById(R.id.activity_search_arrowdown_left_bt);
+        leftArrowBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                datePiker("LEFT");
+            }
+        });
+
+        ImageButton rightArrowBt = findViewById(R.id.activity_search_arrowdown_right_bt);
+        rightArrowBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                datePiker("RIGHT");
+            }
+        });
 
         Button searchBt = findViewById(R.id.activity_search_button);
         searchBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                query = gettingQuery();
 
-                EditText beginDateET = findViewById(R.id.activity_search_date_begin);
-                EditText endDateET = findViewById(R.id.activity_search_date_end);
-                dateBeginFormatAPI = formatDate(beginDateET.getText());
-                dateEndFormatAPI = formatDate(endDateET.getText());
-                if (dateBeginFormatAPI.equals("bad_date") | dateEndFormatAPI.equals("bad_date")) {
-                    toast(R.string.badFormatDate);
-                } else {
+                presenter.search();
 
-                    if (query.isEmpty()) {
-                        toast(R.string.enterAtLeastOneKeyWord);
-                    } else {
-                        categories = selectCategories();
-
-                        if (categories.equals("news_desk:()")) {
-                            toast(R.string.checkAtLeastOneCategory);
-                        } else {
-                            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-                            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-                            OkHttpClient.Builder builder = UnsafeOkHttpClient.getUnsafeOkHttpClient().addInterceptor(interceptor);
-
-                            Retrofit retrofit = new Retrofit.Builder()
-                                    .baseUrl("http://api.nytimes.com/svc/")
-                                    .client(builder.build())
-                                    .addConverterFactory(GsonConverterFactory.create())
-                                    .build();
-                            final NewsService service = retrofit.create(NewsService.class);
-                            service.listSearch(query, categories, dateBeginFormatAPI, dateEndFormatAPI).enqueue(new Callback<ArticlesSearchResponse>() {
-                                @Override
-                                public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
-
-                                    resultSearch = response;
-                                    context = SearchActivity.this;
-                                    Intent intent = new Intent(context, ResultSearchActivity.class);
-                                    intent.putExtra("source", "SearchActivity");
-                                    context.startActivity(intent);
-                                }
-
-                                @Override
-                                public void onFailure(Call<ArticlesSearchResponse> call, Throwable t) {
-                                    t.printStackTrace();
-                                }
-                            });
-                        }
-                    }
-                }
             }
+
         });
     }
+
+
+
+
+
 
     private String formatDate(Editable editable) {
 
@@ -128,27 +86,9 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void toast(int text) {
-        context = getApplicationContext();
-        Toast.makeText(context, context.getString(text), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getString(text), Toast.LENGTH_LONG).show();
     }
 
-    private void datePikerButton() {
-        ImageButton leftArrowBt = findViewById(R.id.activity_search_arrowdown_left_bt);
-        leftArrowBt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                datePiker("LEFT");
-            }
-        });
-
-        ImageButton rightArrowBt = findViewById(R.id.activity_search_arrowdown_right_bt);
-        rightArrowBt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                datePiker("RIGHT");
-            }
-        });
-    }
 
     public String selectCategories() {
 
@@ -198,7 +138,33 @@ public class SearchActivity extends AppCompatActivity {
 
     private void datePiker(final String position) {
 
-        query = gettingQuery();   // save query before change view
+        /*EditText edittext = (EditText) findViewById(R.id.datePicker_editText);
+        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateLabel();
+            }
+
+        };
+        edittext = (EditText) findViewById(R.id.datePicker_editText);
+        edittext.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                new DatePickerDialog(SearchActivity.this, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });*/
+
+       /* query = gettingQuery();   // save query before change view
         setContentView(R.layout.datepicker);
         Button button = findViewById(R.id.datePicker_button);
         final DatePicker datePicker = findViewById(R.id.datePicker);
@@ -264,8 +230,15 @@ public class SearchActivity extends AppCompatActivity {
                 search();
 
             }
-        });
+        });*/
 
 
+    }
+
+    private void updateLabel() {
+        String myFormat = "MM/dd/yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        EditText edittext = (EditText) findViewById(R.id.datePicker_editText);
+        //edittext.setText(sdf.format(myCalendar.getTime()));
     }
 }

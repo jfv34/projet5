@@ -36,6 +36,7 @@ public class NotificationsActivity extends SearchActivity {
                     } else {
                         categories = selectCategories();
                         notifications = true;
+                        WorkManager.getInstance().cancelAllWork();
                         WorkManager.getInstance().enqueue(periodicWorkRequest);
 
 

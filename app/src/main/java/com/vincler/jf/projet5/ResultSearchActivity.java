@@ -2,10 +2,10 @@ package com.vincler.jf.projet5;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.vincler.jf.projet5.models.ArticleSearch;
@@ -34,17 +34,20 @@ public class ResultSearchActivity extends AppCompatActivity {
                 resultSearch = MainActivity.resultSearch;
             }
             if (source.equals("SearchActivity")) {
-                resultSearch = SearchActivity.resultSearch;
+                resultSearch = SearchActivityPresenter.resultSearch;
             }
         }
 
         setContentView(R.layout.activity_resultsearch);
-        final RecyclerView rv = findViewById(R.id.resultSearch_recyclerView);
 
+        final AppBarLayout appbar = findViewById(R.id.resultSearch_appbarlayout); // not useful ?
+
+        // getSupportActionBar().setTitle("Search results");
+
+        final RecyclerView rv = findViewById(R.id.resultSearch_recyclerView);
         rv.setLayoutManager(new LinearLayoutManager(this));
         if (resultSearch != null) {
             if (resultSearch.body().getResults().isEmpty()) {
-                Log.i("TAG-search", "VIDE");
                 final TextView tv = findViewById(R.id.resultSearch_textView);
                 tv.setText("Aucun résultat trouvé");
 

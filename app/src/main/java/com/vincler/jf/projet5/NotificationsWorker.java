@@ -12,12 +12,15 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import com.vincler.jf.projet5.data.NewsService;
+import com.vincler.jf.projet5.models.ArticleSearch;
 import com.vincler.jf.projet5.models.ArticlesSearchResponse;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -36,6 +39,8 @@ public class NotificationsWorker extends Worker {
     @Override
     public Result doWork() {
 
+        Log.i("TAG-worker", "session");
+
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient.Builder builder = UnsafeOkHttpClient.getUnsafeOkHttpClient().addInterceptor(interceptor);
@@ -49,12 +54,31 @@ public class NotificationsWorker extends Worker {
 
         String query = ""; // query from NotificationsActivity
         String categories = ""; // categories from NotificationsActivity
+
+
         String dateBeginFormatAPI = dateYesterday();
         String dateEndFormatAPI = dateToday();
         service.listSearch(query, categories, dateBeginFormatAPI, dateEndFormatAPI).enqueue(new Callback<ArticlesSearchResponse>() {
             @Override
             public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
+                if (!response.body().getResults().isEmpty()) {
+                    List<ArticleSearch> articleSearch = response.body().getResults();
+                    DateFormat dateFormat = new SimpleDateFormat("HHmm", Locale.FRANCE);
+                    List<ArticleSearch> articleSearch24hours = null;
+                    long dateTodayMillisecond = new Date().getTime();
+                    long dateArticleMillisecond;
+                    long periode;
 
+
+                    for (int i = 0; i < articleSearch.size() - 1; i++) {
+                        dateArticleMillisecond = articleSearch.get(i).date.getTime();
+                        periode = dateTodayMillisecond - dateArticleMillisecond;
+                        if (periode < 86400000) {
+                            // articleSearch24hours.add(articleSearch.get(i));
+                        }
+                    }
+                    ;
+                }
 
             }
 
@@ -63,6 +87,7 @@ public class NotificationsWorker extends Worker {
                 t.printStackTrace();
             }
         });
+
         /*sendNotification("Test-titre","Test-message");*/
         DoTest();
         return Result.success();

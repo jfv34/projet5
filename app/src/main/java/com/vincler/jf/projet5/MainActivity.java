@@ -11,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -19,6 +20,7 @@ import com.vincler.jf.projet5.models.ArticleListType;
 import com.vincler.jf.projet5.models.ArticlesSearchResponse;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -40,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         setContentView(R.layout.activity_main);
         configureToolbar();
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     resultSearch = response;
                     Context context = MainActivity.this;
                     Intent intent = new Intent(context, ResultSearchActivity.class);
-                    intent.putExtra("source","MainActivity");
+                    intent.putExtra("source", "MainActivity");
                     context.startActivity(intent);
                 }
 
