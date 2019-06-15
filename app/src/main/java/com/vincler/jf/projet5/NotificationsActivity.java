@@ -1,6 +1,7 @@
 package com.vincler.jf.projet5;
 
 import android.os.Bundle;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
@@ -12,9 +13,12 @@ import java.util.concurrent.TimeUnit;
 
 public class NotificationsActivity extends SearchActivity {
 
+    NotificationsPresenter presenter = new NotificationsPresenter();
+
 
     boolean notifications = false;
     String categories;
+    String query;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,21 +29,31 @@ public class NotificationsActivity extends SearchActivity {
         okNotifications.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
                 if (okNotifications.isChecked()) {
 
-                    String query = gettingQuery();
+                    query = gettingQuery();
 
                     if (query.isEmpty()) {
                         toast(R.string.enterAtLeastOneKeyWord);
                         okNotifications.setChecked(false);
                         notifications = false;
                     } else {
-                        categories = selectCategories();
+                        //categories = selectCategories();
                         notifications = true;
+                        final CheckBox arts_check = findViewById(R.id.activity_search_checkbox_1);
+                        final CheckBox business_check = findViewById(R.id.activity_search_checkbox_2);
+                        final CheckBox entrepreneurs_check = findViewById(R.id.activity_search_checkbox_3);
+                        final CheckBox politics_check = findViewById(R.id.activity_search_checkbox_4);
+                        final CheckBox sports_check = findViewById(R.id.activity_search_checkbox_5);
+                        final CheckBox travels_check = findViewById(R.id.activity_search_checkbox_6);
+
+                        presenter.selectCategories(arts_check, business_check, entrepreneurs_check,
+                                politics_check, sports_check, travels_check);
+                        presenter.data(query, categories);
+
                         WorkManager.getInstance().cancelAllWork();
                         WorkManager.getInstance().enqueue(periodicWorkRequest);
-
-
                     }
 
                 } else {

@@ -3,28 +3,15 @@ package com.vincler.jf.projet5;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.vincler.jf.projet5.data.NewsService;
-import com.vincler.jf.projet5.models.ArticlesSearchResponse;
-
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -57,7 +44,24 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                presenter.search();
+                EditText beginDateET = findViewById(R.id.activity_search_date_begin);
+                EditText endDateET = findViewById(R.id.activity_search_date_end);
+                EditText editText = findViewById(R.id.activity_search_query);
+                final CheckBox arts_check = findViewById(R.id.activity_search_checkbox_1);
+                final CheckBox business_check = findViewById(R.id.activity_search_checkbox_2);
+                final CheckBox entrepreneurs_check = findViewById(R.id.activity_search_checkbox_3);
+                final CheckBox politics_check = findViewById(R.id.activity_search_checkbox_4);
+                final CheckBox sports_check = findViewById(R.id.activity_search_checkbox_5);
+                final CheckBox travels_check = findViewById(R.id.activity_search_checkbox_6);
+
+
+                presenter.search(beginDateET.getText().toString(), endDateET.getText().toString(),
+                        editText.getText().toString(), arts_check, business_check, entrepreneurs_check,
+                        politics_check, sports_check, travels_check);
+
+                Intent intent = new Intent(SearchActivity.this, ResultSearchActivity.class);
+                intent.putExtra("source", "SearchActivity");
+                startActivity(intent);
 
             }
 
@@ -65,67 +69,10 @@ public class SearchActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
-    private String formatDate(Editable editable) {
-
-        String textDate = editable.toString();
-        if (textDate.isEmpty()) {
-            return "";
-        }
-        if (textDate.length() != 10) {
-            return "bad_date";
-        }
-        if (!textDate.substring(2, 3).equals("/") | !textDate.substring(5, 6).equals("/")) {
-            return "bad_date";
-
-        }
-        return textDate.substring(6, 10) + textDate.substring(3, 5) + textDate.substring(0, 2);
-    }
-
     public void toast(int text) {
         Toast.makeText(this, getString(text), Toast.LENGTH_LONG).show();
     }
 
-
-    public String selectCategories() {
-
-        final CheckBox arts_check = findViewById(R.id.activity_search_checkbox_1);
-        final CheckBox business_check = findViewById(R.id.activity_search_checkbox_2);
-        final CheckBox entrepreneurs_check = findViewById(R.id.activity_search_checkbox_3);
-        final CheckBox politics_check = findViewById(R.id.activity_search_checkbox_4);
-        final CheckBox sports_check = findViewById(R.id.activity_search_checkbox_5);
-        final CheckBox travels_check = findViewById(R.id.activity_search_checkbox_6);
-
-
-        StringBuilder txtSearch = new StringBuilder();
-        txtSearch.append("news_desk:(");
-
-        if (arts_check.isChecked()) {
-            txtSearch.append("\"arts\"");
-        }
-        if (business_check.isChecked()) {
-            txtSearch.append("\"business\"");
-        }
-        if (entrepreneurs_check.isChecked()) {
-            txtSearch.append("\"entrepreneurs\"");
-        }
-        if (politics_check.isChecked()) {
-            txtSearch.append("\"politics\"");
-        }
-        if (sports_check.isChecked()) {
-            txtSearch.append("\"sports\"");
-        }
-        if (travels_check.isChecked()) {
-            txtSearch.append("\"travels\"");
-        }
-
-        txtSearch.append(")");
-
-        return txtSearch.toString();
-    }
 
     public String gettingQuery() {
 

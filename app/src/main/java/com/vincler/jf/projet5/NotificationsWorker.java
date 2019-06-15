@@ -1,36 +1,18 @@
 package com.vincler.jf.projet5;
 
-import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import com.vincler.jf.projet5.data.NewsService;
-import com.vincler.jf.projet5.models.ArticleSearch;
-import com.vincler.jf.projet5.models.ArticlesSearchResponse;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 public class NotificationsWorker extends Worker {
+
+    NotificationsPresenter presenter = new NotificationsPresenter();
+
     public NotificationsWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
     }
@@ -39,81 +21,11 @@ public class NotificationsWorker extends Worker {
     @Override
     public Result doWork() {
 
-        Log.i("TAG-worker", "session");
-
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient.Builder builder = UnsafeOkHttpClient.getUnsafeOkHttpClient().addInterceptor(interceptor);
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.nytimes.com/svc/")
-                .client(builder.build())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        final NewsService service = retrofit.create(NewsService.class);
-
-        String query = ""; // query from NotificationsActivity
-        String categories = ""; // categories from NotificationsActivity
-
-
-        String dateBeginFormatAPI = dateYesterday();
-        String dateEndFormatAPI = dateToday();
-        service.listSearch(query, categories, dateBeginFormatAPI, dateEndFormatAPI).enqueue(new Callback<ArticlesSearchResponse>() {
-            @Override
-            public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
-                if (!response.body().getResults().isEmpty()) {
-                    List<ArticleSearch> articleSearch = response.body().getResults();
-                    DateFormat dateFormat = new SimpleDateFormat("HHmm", Locale.FRANCE);
-                    List<ArticleSearch> articleSearch24hours = null;
-                    long dateTodayMillisecond = new Date().getTime();
-                    long dateArticleMillisecond;
-                    long periode;
-
-
-                    for (int i = 0; i < articleSearch.size() - 1; i++) {
-                        dateArticleMillisecond = articleSearch.get(i).date.getTime();
-                        periode = dateTodayMillisecond - dateArticleMillisecond;
-                        if (periode < 86400000) {
-                            // articleSearch24hours.add(articleSearch.get(i));
-                        }
-                    }
-                    ;
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<ArticlesSearchResponse> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-
-        /*sendNotification("Test-titre","Test-message");*/
-        DoTest();
+        presenter.retrofit();
+        sendNotification("Test-titre", "Test-message");
         return Result.success();
+
     }
-
-    private String dateYesterday() {
-        final Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -1);
-        Date date = cal.getTime();
-        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-        return dateFormat.format(date);
-    }
-
-
-    private String dateToday() {
-
-        Date date = new Date();
-        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-        return dateFormat.format(date);
-    }
-
-
-    private void DoTest() {
-        Log.i("TAG-worker", "Envoyé");
-    }
-
 
     public void sendNotification(String title, String message) {
         NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
@@ -131,6 +43,4 @@ public class NotificationsWorker extends Worker {
 
         notificationManager.notify(1, notification.build());
     }
-
-
 }

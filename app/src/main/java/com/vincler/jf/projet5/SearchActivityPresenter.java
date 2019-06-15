@@ -1,6 +1,7 @@
 package com.vincler.jf.projet5;
 
 import android.annotation.SuppressLint;
+import android.widget.CheckBox;
 
 import com.vincler.jf.projet5.data.NewsService;
 import com.vincler.jf.projet5.models.ArticlesSearchResponse;
@@ -34,7 +35,9 @@ public class SearchActivityPresenter {
     }
 
     public String getDateBeginFormatAPI() {
-        if(dateBeginFormatAPI.isEmpty()){return null;}
+        if (dateBeginFormatAPI.isEmpty()) {
+            return null;
+        }
         return dateBeginFormatAPI;
     }
 
@@ -43,7 +46,9 @@ public class SearchActivityPresenter {
     }
 
     public String getDateEndFormatAPI() {
-        if(dateEndFormatAPI.isEmpty()){return null;}
+        if (dateEndFormatAPI.isEmpty()) {
+            return null;
+        }
         return dateEndFormatAPI;
     }
 
@@ -77,12 +82,12 @@ public class SearchActivityPresenter {
         return dateFormat.format(date);
     }
 
-    public void search() {
+    public void search(String beginDate, String endDate, String query, CheckBox arts_check,
+                       CheckBox business_check, CheckBox entrepreneurs_check, CheckBox politics_check,
+                       CheckBox sports_check, CheckBox travels_check) {
 
-    /*    EditText beginDateET = findViewById(R.id.activity_search_date_begin);
-        EditText endDateET = findViewById(R.id.activity_search_date_end);
-        dateBeginFormatAPI = formatDate(beginDateET.getText());
-        dateEndFormatAPI = formatDate(endDateET.getText());*/
+        String dateBeginFormatAPI = formatDate(beginDate);
+        String dateEndFormatAPI = formatDate(endDate);
 
 
         if (dateBeginFormatAPI.equals("bad_date") | dateEndFormatAPI.equals("bad_date")) {
@@ -92,7 +97,9 @@ public class SearchActivityPresenter {
             if (query.isEmpty()) {
                 //toast(R.string.enterAtLeastOneKeyWord);
             } else {
-                //categories = selectCategories();
+
+                categories = selectCategories(arts_check, business_check, entrepreneurs_check,
+                        politics_check, sports_check, travels_check);
 
                 if (categories.equals("news_desk:()")) {
                     //toast(R.string.checkAtLeastOneCategory);
@@ -105,10 +112,10 @@ public class SearchActivityPresenter {
                         @Override
                         public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
 
+
                             resultSearch = response;
-                /*Intent intent = new Intent(SearchActivity.this, ResultSearchActivity.class);
-                intent.putExtra("source", "SearchActivity");
-                startActivity(intent);*/
+
+
                         }
 
                         @Override
@@ -119,6 +126,50 @@ public class SearchActivityPresenter {
                 }
             }
         }
+    }
+
+    private String selectCategories(CheckBox arts_check, CheckBox business_check, CheckBox entrepreneurs_check,
+                                    CheckBox politics_check, CheckBox sports_check, CheckBox travels_check) {
+        StringBuilder txtSearch = new StringBuilder();
+        txtSearch.append("news_desk:(");
+
+        if (arts_check.isChecked()) {
+            txtSearch.append("\"arts\"");
+        }
+        if (business_check.isChecked()) {
+            txtSearch.append("\"business\"");
+        }
+        if (entrepreneurs_check.isChecked()) {
+            txtSearch.append("\"entrepreneurs\"");
+        }
+        if (politics_check.isChecked()) {
+            txtSearch.append("\"politics\"");
+        }
+        if (sports_check.isChecked()) {
+            txtSearch.append("\"sports\"");
+        }
+        if (travels_check.isChecked()) {
+            txtSearch.append("\"travels\"");
+        }
+
+        txtSearch.append(")");
+
+        return txtSearch.toString();
+    }
+
+    private String formatDate(String textDate) {
+
+        if (textDate.isEmpty()) {
+            return "";
+        }
+        if (textDate.length() != 10) {
+            return "bad_date";
+        }
+        if (!textDate.substring(2, 3).equals("/") | !textDate.substring(5, 6).equals("/")) {
+            return "bad_date";
+
+        }
+        return textDate.substring(6, 10) + textDate.substring(3, 5) + textDate.substring(0, 2);
     }
 
 
