@@ -4,11 +4,11 @@ import android.annotation.SuppressLint;
 import android.widget.CheckBox;
 
 import com.vincler.jf.projet5.data.NewsService;
+import com.vincler.jf.projet5.models.ArrowClicked;
 import com.vincler.jf.projet5.models.ArticlesSearchResponse;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -21,48 +21,56 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SearchActivityPresenter {
     public static Response<ArticlesSearchResponse> resultSearch;
 
-    private String query = "";
     private String dateBeginFormatAPI = "";
     private String dateEndFormatAPI = "";
-    private String categories = "";
+    private String dateBeginDisplayed = "";
+    private String dateEndDisplayed = "";
+    private byte error = 0;
 
-    public String getQuery() {
-        return query;
+    public static Response<ArticlesSearchResponse> getResultSearch() {
+        return resultSearch;
     }
 
-    public void setQuery(String query) {
-        this.query = query;
-    }
-
-    public String getDateBeginFormatAPI() {
-        if (dateBeginFormatAPI.isEmpty()) {
-            return null;
+    public String getDateBeginDisplayed() {
+        if (dateBeginDisplayed.isEmpty()) {
+            return "";
         }
-        return dateBeginFormatAPI;
+        return dateBeginDisplayed;
+    }
+
+    public String getDateEndDisplayed() {
+        if (dateEndDisplayed.isEmpty()) {
+            return "";
+        }
+        return dateEndDisplayed;
+    }
+
+    public byte getError() {
+        return error;
     }
 
     public void setDateBeginFormatAPI(String dateBeginFormatAPI) {
         this.dateBeginFormatAPI = dateBeginFormatAPI;
     }
 
+    public void setDateEndFormatAPI(String dateEndFormatAPI) {
+        this.dateEndFormatAPI = dateEndFormatAPI;
+    }
+
+    public String getDateBeginFormatAPI() {
+        if (dateBeginFormatAPI == null | dateBeginFormatAPI.isEmpty()) {
+            return null;
+        }
+        return dateBeginFormatAPI;
+    }
+
     public String getDateEndFormatAPI() {
-        if (dateEndFormatAPI.isEmpty()) {
+        if (dateEndFormatAPI == null | dateEndFormatAPI.isEmpty()) {
             return null;
         }
         return dateEndFormatAPI;
     }
 
-    public void setDateEndFormatAPI(String dateEndFormatAPI) {
-        this.dateEndFormatAPI = dateEndFormatAPI;
-    }
-
-    public String getCategories() {
-        return categories;
-    }
-
-    public void setCategories(String categories) {
-        this.categories = categories;
-    }
 
     final NewsService service = new Retrofit.Builder()
             .baseUrl("http://api.nytimes.com/svc/")
@@ -73,7 +81,6 @@ public class SearchActivityPresenter {
                                     .setLevel(HttpLoggingInterceptor.Level.BODY)).build())
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(NewsService.class);
-    final Calendar myCalendar = Calendar.getInstance();
 
 
     private String dateToday() {
@@ -82,40 +89,28 @@ public class SearchActivityPresenter {
         return dateFormat.format(date);
     }
 
-    public void search(String beginDate, String endDate, String query, CheckBox arts_check,
+    public void search(String query, CheckBox arts_check,
                        CheckBox business_check, CheckBox entrepreneurs_check, CheckBox politics_check,
                        CheckBox sports_check, CheckBox travels_check) {
 
-        String dateBeginFormatAPI = formatDate(beginDate);
-        String dateEndFormatAPI = formatDate(endDate);
-
-
-        if (dateBeginFormatAPI.equals("bad_date") | dateEndFormatAPI.equals("bad_date")) {
-            //toast(R.string.badFormatDate);
+        error = 0;
+        if (query.isEmpty()) {
+            error = 3;
         } else {
-
-            if (query.isEmpty()) {
-                //toast(R.string.enterAtLeastOneKeyWord);
+            String categories = selectCategories(arts_check, business_check, entrepreneurs_check,
+                    politics_check, sports_check, travels_check);
+            if (categories.equals("news_desk:()")) {
+                error = 4;
             } else {
+                error = verifyDates();
+                dateBeginFormatAPI = getDateBeginFormatAPI();
+                dateEndFormatAPI = getDateEndFormatAPI();
 
-                categories = selectCategories(arts_check, business_check, entrepreneurs_check,
-                        politics_check, sports_check, travels_check);
-
-                if (categories.equals("news_desk:()")) {
-                    //toast(R.string.checkAtLeastOneCategory);
-                } else {
-
-                    //ifDateEmpty();
-
-
+                if (error == 0) {
                     service.listSearch(query, categories, dateBeginFormatAPI, dateEndFormatAPI).enqueue(new Callback<ArticlesSearchResponse>() {
                         @Override
                         public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
-
-
                             resultSearch = response;
-
-
                         }
 
                         @Override
@@ -153,24 +148,51 @@ public class SearchActivityPresenter {
         }
 
         txtSearch.append(")");
-
         return txtSearch.toString();
     }
 
-    private String formatDate(String textDate) {
+    public void dates(int yearDP, int monthOfYear, int dayOfMonth, ArrowClicked arrowClicked) {
+        String year = "", month = "", day = "";
+        year = String.valueOf(yearDP);
+        monthOfYear++;
+        if (monthOfYear < 10) {
+            month = "0";
+        }
+        month = month + (monthOfYear);
+        if (dayOfMonth < 10) {
+            day = "0";
+        }
+        day = day + dayOfMonth;
+        String dateDisplayed = day + "/" + month + "/" + year;
 
-        if (textDate.isEmpty()) {
-            return "";
-        }
-        if (textDate.length() != 10) {
-            return "bad_date";
-        }
-        if (!textDate.substring(2, 3).equals("/") | !textDate.substring(5, 6).equals("/")) {
-            return "bad_date";
+        if (arrowClicked == ArrowClicked.LEFT) {
+            dateBeginDisplayed = dateDisplayed;
+            dateBeginFormatAPI = year + month + day;
+
+        } else {
+            dateEndDisplayed = dateDisplayed;
+            dateEndFormatAPI = year + month + day;
 
         }
-        return textDate.substring(6, 10) + textDate.substring(3, 5) + textDate.substring(0, 2);
+        error = verifyDates();
     }
 
+    public byte verifyDates() {
 
+
+        if (!dateBeginFormatAPI.isEmpty() && !dateEndFormatAPI.isEmpty()
+                && Integer.valueOf(dateBeginFormatAPI) > Integer.valueOf(dateEndFormatAPI)) {
+            return 1;
+        }
+
+        String dateTodayFormatAPI = dateToday();
+        if (!dateBeginFormatAPI.isEmpty() && Integer.valueOf(dateBeginFormatAPI) > Integer.valueOf(dateTodayFormatAPI)) {
+            return  2;
+        }
+        if (!dateEndFormatAPI.isEmpty() && Integer.valueOf(dateEndFormatAPI) > Integer.valueOf(dateTodayFormatAPI)) {
+            return  2;
+        }
+        return 0;
+    }
 }
+

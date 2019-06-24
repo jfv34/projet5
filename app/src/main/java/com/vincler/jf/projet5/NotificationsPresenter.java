@@ -1,7 +1,6 @@
 package com.vincler.jf.projet5;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 import android.widget.CheckBox;
 
 import com.vincler.jf.projet5.data.NewsService;
@@ -42,7 +41,6 @@ class NotificationsPresenter {
                 .build();
         final NewsService service = retrofit.create(NewsService.class);
 
-
         String dateBeginFormatAPI = dateYesterday();
         String dateEndFormatAPI = dateToday();
         service.listSearch(query, categories, dateBeginFormatAPI, dateEndFormatAPI).enqueue(new Callback<ArticlesSearchResponse>() {
@@ -52,30 +50,34 @@ class NotificationsPresenter {
 
                 if (!response.body().getResults().isEmpty()) {
 
-                    List<ArticleSearch> articleSearch = response.body().getResults();
-                    List<ArticleSearch> articleSearch24hours = new ArrayList<>();
-                    long dateTodayMillisecond = new Date().getTime();
-                    long dateArticleMillisecond;
-                    long periode;
-
-                    for (int i = 0; i < articleSearch.size() - 1; i++) {
-
-                        dateArticleMillisecond = articleSearch.get(i).date.getTime();
-                        periode = dateTodayMillisecond - dateArticleMillisecond;
-                        if (periode < 86400000) {
-
-                            articleSearch24hours.add(articleSearch.get(i));
-                        }
-                    }
+                    List<ArticleSearch> articleSearch24hours = selectArticles(response);
                 }
             }
 
             @Override
             public void onFailure(Call<ArticlesSearchResponse> call, Throwable t) {
-                Log.d("TAG-error", "10");
                 t.printStackTrace();
             }
         });
+    }
+
+    public List<ArticleSearch> selectArticles(Response<ArticlesSearchResponse> response) {
+        List<ArticleSearch> articleSearch = response.body().getResults();
+        List<ArticleSearch> articleSearch24hours = new ArrayList<>();
+        long dateTodayMillisecond = new Date().getTime();
+        long dateArticleMillisecond;
+        long periode;
+
+        for (int i = 0; i < articleSearch.size() - 1; i++) {
+            dateArticleMillisecond = articleSearch.get(i).date.getTime();
+            periode = dateTodayMillisecond - dateArticleMillisecond;
+
+
+            if (periode < 86400000) {
+                articleSearch24hours.add(articleSearch.get(i));
+            }
+        }
+        return articleSearch24hours;
     }
 
     private String dateYesterday() {
@@ -86,7 +88,6 @@ class NotificationsPresenter {
         @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
         return dateFormat.format(date);
     }
-
 
     private String dateToday() {
 

@@ -25,4 +25,5 @@
     <string name="noArticles">Aucun article n\'a été trouvé pour cette recherche</string>
     <string name="errorDate2">Les dates ne doivent pas être supérieures à la date du jour</string>
     <string name="checkAtLeastOneCategory">Cocher au moins une catégorie</string>
+    <string name="noresults">Aucun résultat trouvé</string>
 </resources>

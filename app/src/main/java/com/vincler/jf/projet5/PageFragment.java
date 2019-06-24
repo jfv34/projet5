@@ -22,7 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PageFragment<T extends ArticlesResponse> extends Fragment {
 
-    private static final String KEY_ARTICLELISTTYPE = "position";
+    private static final String KEY_ARTICLELISTTYPE = "arrowClicked";
 
     public static PageFragment newInstance(ArticleListType type) {
         PageFragment fragment = new PageFragment();

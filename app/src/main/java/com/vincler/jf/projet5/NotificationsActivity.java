@@ -1,6 +1,7 @@
 package com.vincler.jf.projet5;
 
 import android.os.Bundle;
+import android.support.v7.widget.SwitchCompat;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -14,8 +15,6 @@ import java.util.concurrent.TimeUnit;
 public class NotificationsActivity extends SearchActivity {
 
     NotificationsPresenter presenter = new NotificationsPresenter();
-
-
     boolean notifications = false;
     String categories;
     String query;
@@ -25,13 +24,12 @@ public class NotificationsActivity extends SearchActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifications);
 
-        final Switch okNotifications = findViewById(R.id.activity_notifications_switch);
+        final SwitchCompat okNotifications = findViewById(R.id.activity_notifications_switch);
         okNotifications.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if (okNotifications.isChecked()) {
-
                     query = gettingQuery();
 
                     if (query.isEmpty()) {
@@ -39,7 +37,6 @@ public class NotificationsActivity extends SearchActivity {
                         okNotifications.setChecked(false);
                         notifications = false;
                     } else {
-                        //categories = selectCategories();
                         notifications = true;
                         final CheckBox arts_check = findViewById(R.id.activity_search_checkbox_1);
                         final CheckBox business_check = findViewById(R.id.activity_search_checkbox_2);

@@ -34,7 +34,7 @@ public class ResultSearchActivity extends AppCompatActivity {
                 resultSearch = MainActivity.resultSearch;
             }
             if (source.equals("SearchActivity")) {
-                resultSearch = SearchActivityPresenter.resultSearch;
+                resultSearch = SearchActivityPresenter.getResultSearch();
             }
         }
 
@@ -46,10 +46,10 @@ public class ResultSearchActivity extends AppCompatActivity {
 
         final RecyclerView rv = findViewById(R.id.resultSearch_recyclerView);
         rv.setLayoutManager(new LinearLayoutManager(this));
-        if (resultSearch != null) {
+        if (resultSearch != null && resultSearch.body() != null) {
             if (resultSearch.body().getResults().isEmpty()) {
                 final TextView tv = findViewById(R.id.resultSearch_textView);
-                tv.setText("Aucun résultat trouvé");
+                tv.setText(R.string.noresults);
 
             } else {
                 List<ArticleSearch> articleSearch = resultSearch.body().getResults();
@@ -57,6 +57,7 @@ public class ResultSearchActivity extends AppCompatActivity {
 
             }
         }
-
     }
+
 }
+

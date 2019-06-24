@@ -1,22 +1,24 @@
 package com.vincler.jf.projet5;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+import com.vincler.jf.projet5.models.ArrowClicked;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
     SearchActivityPresenter presenter = new SearchActivityPresenter();
-
+    ArrowClicked arrowClicked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +29,9 @@ public class SearchActivity extends AppCompatActivity {
         leftArrowBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                datePiker("LEFT");
+
+                arrowClicked = ArrowClicked.LEFT;
+                datePiker();
             }
         });
 
@@ -35,7 +39,8 @@ public class SearchActivity extends AppCompatActivity {
         rightArrowBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                datePiker("RIGHT");
+                arrowClicked = ArrowClicked.RIGHT;
+                datePiker();
             }
         });
 
@@ -44,8 +49,6 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                EditText beginDateET = findViewById(R.id.activity_search_date_begin);
-                EditText endDateET = findViewById(R.id.activity_search_date_end);
                 EditText editText = findViewById(R.id.activity_search_query);
                 final CheckBox arts_check = findViewById(R.id.activity_search_checkbox_1);
                 final CheckBox business_check = findViewById(R.id.activity_search_checkbox_2);
@@ -54,138 +57,85 @@ public class SearchActivity extends AppCompatActivity {
                 final CheckBox sports_check = findViewById(R.id.activity_search_checkbox_5);
                 final CheckBox travels_check = findViewById(R.id.activity_search_checkbox_6);
 
+                presenter.search(editText.getText().toString(), arts_check, business_check,
+                        entrepreneurs_check, politics_check, sports_check, travels_check);
 
-                presenter.search(beginDateET.getText().toString(), endDateET.getText().toString(),
-                        editText.getText().toString(), arts_check, business_check, entrepreneurs_check,
-                        politics_check, sports_check, travels_check);
-
-                Intent intent = new Intent(SearchActivity.this, ResultSearchActivity.class);
-                intent.putExtra("source", "SearchActivity");
-                startActivity(intent);
-
+                byte error = presenter.getError();
+                if (presenter.getError() != 0) {
+                    toast(error);
+                } else {
+                    Intent intent = new Intent(SearchActivity.this, ResultSearchActivity.class);
+                    intent.putExtra("source", "SearchActivity");
+                    startActivity(intent);
+                }
             }
+
 
         });
     }
 
+    private void displayDate(ArrowClicked arrowClicked) {
 
-    public void toast(int text) {
-        Toast.makeText(this, getString(text), Toast.LENGTH_LONG).show();
+        if (arrowClicked == ArrowClicked.RIGHT) {
+            final TextView dateEndTV = findViewById(R.id.activity_search_date_end);
+            String dateEndDisplayed = presenter.getDateEndDisplayed();
+            dateEndTV.setText(dateEndDisplayed);
+        }
+        if (arrowClicked == ArrowClicked.LEFT) {
+            final TextView dateBeginTV = findViewById(R.id.activity_search_date_begin);
+            String dateBeginDisplayed = presenter.getDateBeginDisplayed();
+            dateBeginTV.setText(dateBeginDisplayed);
+
+        }
+        byte error = presenter.getError();
+        if (error == 1 | error == 2) {
+            toast(error);
+        }
     }
 
+    public void toast(int error) {
+
+        switch (error) {
+            case (1):
+                toast(R.string.errorDate1);
+                break;
+            case (2):
+                toast(R.string.errorDate2);
+                break;
+            case (3):
+                toast(R.string.enterAtLeastOneKeyWord);
+                break;
+            case (4):
+                toast(R.string.checkAtLeastOneCategory);
+                break;
+            default:
+                Toast.makeText(this, getString(error), Toast.LENGTH_LONG).show();
+        }
+    }
 
     public String gettingQuery() {
 
-        String txt;
         EditText editText = findViewById(R.id.activity_search_query);
-        txt = editText.getText().toString();
-        return txt;
+        return editText.getText().toString();
     }
 
+    private void datePiker() {
 
-    private void datePiker(final String position) {
+        DatePickerDialog dialog = new DatePickerDialog(this, this, 2019, 0, 1);
+        dialog.show();
+    }
 
-        /*EditText edittext = (EditText) findViewById(R.id.datePicker_editText);
-        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+    @Override
+    public void onDateSet(DatePicker view, int yearDP, int monthOfYear, int dayOfMonth) {
 
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                // TODO Auto-generated method stub
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabel();
-            }
-
-        };
-        edittext = (EditText) findViewById(R.id.datePicker_editText);
-        edittext.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                new DatePickerDialog(SearchActivity.this, date, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });*/
-
-       /* query = gettingQuery();   // save query before change view
-        setContentView(R.layout.datepicker);
-        Button button = findViewById(R.id.datePicker_button);
-        final DatePicker datePicker = findViewById(R.id.datePicker);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String year = "", month = "", day = "";
-                year = String.valueOf(datePicker.getYear());
-                if (datePicker.getMonth() < 9) {
-                    month = "0";
-                }
-                month = month + (datePicker.getMonth() + 1);
-                if (datePicker.getDayOfMonth() < 10) {
-                    day = "0";
-                }
-                day = day + datePicker.getDayOfMonth();
-                dateFormatAPI = year + month + day;
-                dateDisplayed = day + "/" + month + "/" + year;
-
-                setContentView(R.layout.activity_search);
-
-                EditText editText = findViewById(R.id.activity_search_query);
-                editText.setText(query);
-
-
-                if (position.equals("LEFT")) {
-                    dateBegin = dateDisplayed;
-                    dateBeginFormatAPI = dateFormatAPI;
-                }
-                if (position.equals("RIGHT")) {
-                    dateEnd = dateDisplayed;
-                    dateEndFormatAPI = dateFormatAPI;
-                }
-
-
-                if (!dateBeginFormatAPI.isEmpty() && !dateEndFormatAPI.isEmpty() && Integer.valueOf(dateBeginFormatAPI) > Integer.valueOf(dateEndFormatAPI)) {
-                    dateBegin = dateEnd;
-                    dateBeginFormatAPI = dateEndFormatAPI;
-                    toast(R.string.errorDate1);
-                }
-
-                if (!dateBeginFormatAPI.isEmpty() && Integer.valueOf(dateBeginFormatAPI) > Integer.valueOf(dateTodayFormatAPI)) {
-                    dateBegin = dateEnd;
-                    dateBeginFormatAPI = dateEndFormatAPI;
-                    toast(R.string.errorDate2);
-                }
-
-                if (!dateEndFormatAPI.isEmpty() && Integer.valueOf(dateEndFormatAPI) > Integer.valueOf(dateTodayFormatAPI)) {
-                    dateEnd = dateBegin;
-                    dateEndFormatAPI = dateBeginFormatAPI;
-                    toast(R.string.errorDate2);
-                }
-
-
-                EditText beginDateET = findViewById(R.id.activity_search_date_begin);
-                EditText endDateET = findViewById(R.id.activity_search_date_end);
-
-                beginDateET.setText(dateBegin);
-                endDateET.setText(dateEnd);
-
-                datePikerButton();
-                search();
-
-            }
-        });*/
-
+        presenter.dates(yearDP, monthOfYear, dayOfMonth, arrowClicked);
+        displayDate(arrowClicked);
 
     }
 
-    private void updateLabel() {
-        String myFormat = "MM/dd/yy"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        EditText edittext = (EditText) findViewById(R.id.datePicker_editText);
-        //edittext.setText(sdf.format(myCalendar.getTime()));
+    @Override
+    public void onClick(View v) {
     }
 }
+
+
