@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -22,6 +21,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     SearchActivityPresenter presenter = new SearchActivityPresenter();
     ArrowClicked arrowClicked;
+    Toast toast = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +100,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     public void toast(int message) {
-        Log.i("TAG_toast", String.valueOf(message));
+
         switch (message) {
             case (1):
                 toast(R.string.errorDate1);
@@ -118,7 +118,11 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 toast(R.string.stopNotifications);
                 break;
             default:
-                Toast.makeText(this, getString(message), Toast.LENGTH_LONG).show();
+                if (toast != null) {
+                    toast.cancel();
+                }
+                toast = Toast.makeText(this, getString(message), Toast.LENGTH_LONG);
+                toast.show();
         }
     }
 
