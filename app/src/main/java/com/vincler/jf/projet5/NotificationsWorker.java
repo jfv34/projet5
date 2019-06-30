@@ -11,7 +11,7 @@ import androidx.work.WorkerParameters;
 
 public class NotificationsWorker extends Worker {
 
-    NotificationsPresenter presenter = new NotificationsPresenter();
+    NotificationsActivityPresenter presenter = new NotificationsActivityPresenter();
 
     public NotificationsWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);

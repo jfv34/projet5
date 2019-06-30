@@ -1,7 +1,6 @@
 package com.vincler.jf.projet5;
 
 import android.annotation.SuppressLint;
-import android.widget.CheckBox;
 
 import com.vincler.jf.projet5.data.NewsService;
 import com.vincler.jf.projet5.models.ArrowClicked;
@@ -10,6 +9,7 @@ import com.vincler.jf.projet5.models.ArticlesSearchResponse;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -19,15 +19,17 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SearchActivityPresenter {
-    public static Response<ArticlesSearchResponse> resultSearch;
+    public static List resultSearch;
 
     private String dateBeginFormatAPI = "";
     private String dateEndFormatAPI = "";
     private String dateBeginDisplayed = "";
     private String dateEndDisplayed = "";
+    private String categories = "";
     private byte error = 0;
 
-    public static Response<ArticlesSearchResponse> getResultSearch() {
+
+    public static List getResultSearch() {
         return resultSearch;
     }
 
@@ -71,6 +73,10 @@ public class SearchActivityPresenter {
         return dateEndFormatAPI;
     }
 
+    public String getCategories() {
+        return categories;
+    }
+
 
     final NewsService service = new Retrofit.Builder()
             .baseUrl("http://api.nytimes.com/svc/")
@@ -89,15 +95,15 @@ public class SearchActivityPresenter {
         return dateFormat.format(date);
     }
 
-    public void search(String query, CheckBox arts_check,
-                       CheckBox business_check, CheckBox entrepreneurs_check, CheckBox politics_check,
-                       CheckBox sports_check, CheckBox travels_check) {
+    public void search(String query, boolean arts_check,
+                       boolean business_check, boolean entrepreneurs_check, boolean politics_check,
+                       boolean sports_check, boolean travels_check) {
 
         error = 0;
         if (query.isEmpty()) {
             error = 3;
         } else {
-            String categories = selectCategories(arts_check, business_check, entrepreneurs_check,
+            categories = selectCategories(arts_check, business_check, entrepreneurs_check,
                     politics_check, sports_check, travels_check);
             if (categories.equals("news_desk:()")) {
                 error = 4;
@@ -110,7 +116,9 @@ public class SearchActivityPresenter {
                     service.listSearch(query, categories, dateBeginFormatAPI, dateEndFormatAPI).enqueue(new Callback<ArticlesSearchResponse>() {
                         @Override
                         public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
-                            resultSearch = response;
+                            if (response.body() != null) {
+                                resultSearch = response.body().getResults();
+                            }
                         }
 
                         @Override
@@ -123,27 +131,27 @@ public class SearchActivityPresenter {
         }
     }
 
-    private String selectCategories(CheckBox arts_check, CheckBox business_check, CheckBox entrepreneurs_check,
-                                    CheckBox politics_check, CheckBox sports_check, CheckBox travels_check) {
+    private String selectCategories(boolean arts_check, boolean business_check, boolean entrepreneurs_check,
+                                    boolean politics_check, boolean sports_check, boolean travels_check) {
         StringBuilder txtSearch = new StringBuilder();
         txtSearch.append("news_desk:(");
 
-        if (arts_check.isChecked()) {
+        if (arts_check) {
             txtSearch.append("\"arts\"");
         }
-        if (business_check.isChecked()) {
+        if (business_check) {
             txtSearch.append("\"business\"");
         }
-        if (entrepreneurs_check.isChecked()) {
+        if (entrepreneurs_check) {
             txtSearch.append("\"entrepreneurs\"");
         }
-        if (politics_check.isChecked()) {
+        if (politics_check) {
             txtSearch.append("\"politics\"");
         }
-        if (sports_check.isChecked()) {
+        if (sports_check) {
             txtSearch.append("\"sports\"");
         }
-        if (travels_check.isChecked()) {
+        if (travels_check) {
             txtSearch.append("\"travels\"");
         }
 

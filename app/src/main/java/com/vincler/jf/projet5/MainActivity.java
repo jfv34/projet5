@@ -102,9 +102,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 @Override
                 public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
 
+
                     resultSearch = response;
                     Context context = MainActivity.this;
                     Intent intent = new Intent(context, ResultSearchActivity.class);
+
+
                     intent.putExtra("source", "MainActivity");
                     context.startActivity(intent);
                 }

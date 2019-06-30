@@ -26,4 +26,5 @@
     <string name="errorDate2">Les dates ne doivent pas être supérieures à la date du jour</string>
     <string name="checkAtLeastOneCategory">Cocher au moins une catégorie</string>
     <string name="noresults">Aucun résultat trouvé</string>
+    <string name="stopNotifications">Désactivation des notifications</string>
 </resources>

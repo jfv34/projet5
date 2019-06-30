@@ -4,18 +4,11 @@ import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.Switch;
-
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
-
-import java.util.concurrent.TimeUnit;
 
 
 public class NotificationsActivity extends SearchActivity {
 
-    NotificationsPresenter presenter = new NotificationsPresenter();
-    boolean notifications = false;
+    NotificationsActivityPresenter presenter = new NotificationsActivityPresenter();
     String categories;
     String query;
 
@@ -30,37 +23,36 @@ public class NotificationsActivity extends SearchActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if (okNotifications.isChecked()) {
+
+                    final CheckBox arts_check = findViewById(R.id.activity_search_checkbox_1);
+                    final CheckBox business_check = findViewById(R.id.activity_search_checkbox_2);
+                    final CheckBox entrepreneurs_check = findViewById(R.id.activity_search_checkbox_3);
+                    final CheckBox politics_check = findViewById(R.id.activity_search_checkbox_4);
+                    final CheckBox sports_check = findViewById(R.id.activity_search_checkbox_5);
+                    final CheckBox travels_check = findViewById(R.id.activity_search_checkbox_6);
+
                     query = gettingQuery();
 
-                    if (query.isEmpty()) {
-                        toast(R.string.enterAtLeastOneKeyWord);
+                    presenter.okNotificationsChecked(query, arts_check.isChecked(),
+                            business_check.isChecked(), entrepreneurs_check.isChecked(), politics_check.isChecked(),
+                            sports_check.isChecked(), travels_check.isChecked());
+
+                    byte error = presenter.getError();
+
+                    if (presenter.getError() != 0) {
                         okNotifications.setChecked(false);
-                        notifications = false;
+                        toast(error);
                     } else {
-                        notifications = true;
-                        final CheckBox arts_check = findViewById(R.id.activity_search_checkbox_1);
-                        final CheckBox business_check = findViewById(R.id.activity_search_checkbox_2);
-                        final CheckBox entrepreneurs_check = findViewById(R.id.activity_search_checkbox_3);
-                        final CheckBox politics_check = findViewById(R.id.activity_search_checkbox_4);
-                        final CheckBox sports_check = findViewById(R.id.activity_search_checkbox_5);
-                        final CheckBox travels_check = findViewById(R.id.activity_search_checkbox_6);
-
-                        presenter.selectCategories(arts_check, business_check, entrepreneurs_check,
-                                politics_check, sports_check, travels_check);
-                        presenter.data(query, categories);
-
-                        WorkManager.getInstance().cancelAllWork();
-                        WorkManager.getInstance().enqueue(periodicWorkRequest);
+                        presenter.sendPeriodicsNotifications();
                     }
-
                 } else {
-                    notifications = false;
+                    presenter.stopNotifications();
+                    toast(5);
+
                 }
             }
         });
     }
 
-    final PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationsWorker.class, 16, TimeUnit.MINUTES)
-            .addTag("periodic_work")
-            .build();
 }
+

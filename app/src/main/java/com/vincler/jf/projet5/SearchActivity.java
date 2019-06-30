@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.vincler.jf.projet5.models.ArrowClicked;
+
+import java.util.List;
 
 public class SearchActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
@@ -57,15 +60,18 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 final CheckBox sports_check = findViewById(R.id.activity_search_checkbox_5);
                 final CheckBox travels_check = findViewById(R.id.activity_search_checkbox_6);
 
-                presenter.search(editText.getText().toString(), arts_check, business_check,
-                        entrepreneurs_check, politics_check, sports_check, travels_check);
+                presenter.search(editText.getText().toString(), arts_check.isChecked(), business_check.isChecked(),
+                        entrepreneurs_check.isChecked(), politics_check.isChecked(), sports_check.isChecked(), travels_check.isChecked());
 
                 byte error = presenter.getError();
                 if (presenter.getError() != 0) {
                     toast(error);
                 } else {
                     Intent intent = new Intent(SearchActivity.this, ResultSearchActivity.class);
-                    intent.putExtra("source", "SearchActivity");
+                    List resultSearch = presenter.getResultSearch();
+                    ArticleParcelable articleParcelable = new ArticleParcelable(resultSearch);
+                    intent.putExtra("articleParcelable", articleParcelable);
+
                     startActivity(intent);
                 }
             }
@@ -93,9 +99,9 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    public void toast(int error) {
-
-        switch (error) {
+    public void toast(int message) {
+        Log.i("TAG_toast", String.valueOf(message));
+        switch (message) {
             case (1):
                 toast(R.string.errorDate1);
                 break;
@@ -108,8 +114,11 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             case (4):
                 toast(R.string.checkAtLeastOneCategory);
                 break;
+            case (5):
+                toast(R.string.stopNotifications);
+                break;
             default:
-                Toast.makeText(this, getString(error), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(message), Toast.LENGTH_LONG).show();
         }
     }
 

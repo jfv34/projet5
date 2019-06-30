@@ -1,7 +1,9 @@
 package com.vincler.jf.projet5;
 
 import android.annotation.SuppressLint;
-import android.widget.CheckBox;
+
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.vincler.jf.projet5.data.NewsService;
 import com.vincler.jf.projet5.models.ArticleSearch;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -22,11 +25,25 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-class NotificationsPresenter {
+class NotificationsActivityPresenter {
 
-
+    private final int REPEAT_INTERVAL_NOTIFICATIONS = 24;
     private String query;
     private String categories;
+    private byte error = 0;
+
+    final PeriodicWorkRequest periodicWorkRequest =
+            new PeriodicWorkRequest.Builder(NotificationsWorker.class, REPEAT_INTERVAL_NOTIFICATIONS, TimeUnit.HOURS)
+                    .addTag("periodic_work")
+                    .build();
+
+    public byte getError() {
+        return error;
+    }
+
+    public String getCategories() {
+        return categories;
+    }
 
     public void retrofit() {
 
@@ -101,27 +118,27 @@ class NotificationsPresenter {
         this.categories = categories;
     }
 
-    public String selectCategories(CheckBox arts_check, CheckBox business_check, CheckBox entrepreneurs_check,
-                                   CheckBox politics_check, CheckBox sports_check, CheckBox travels_check) {
+    public String selectCategories(boolean arts_check, boolean business_check, boolean entrepreneurs_check,
+                                   boolean politics_check, boolean sports_check, boolean travels_check) {
         StringBuilder txtSearch = new StringBuilder();
         txtSearch.append("news_desk:(");
 
-        if (arts_check.isChecked()) {
+        if (arts_check) {
             txtSearch.append("\"arts\"");
         }
-        if (business_check.isChecked()) {
+        if (business_check) {
             txtSearch.append("\"business\"");
         }
-        if (entrepreneurs_check.isChecked()) {
+        if (entrepreneurs_check) {
             txtSearch.append("\"entrepreneurs\"");
         }
-        if (politics_check.isChecked()) {
+        if (politics_check) {
             txtSearch.append("\"politics\"");
         }
-        if (sports_check.isChecked()) {
+        if (sports_check) {
             txtSearch.append("\"sports\"");
         }
-        if (travels_check.isChecked()) {
+        if (travels_check) {
             txtSearch.append("\"travels\"");
         }
 
@@ -131,4 +148,30 @@ class NotificationsPresenter {
     }
 
 
+    public void okNotificationsChecked(String query, boolean arts_check,
+                                       boolean business_check, boolean entrepreneurs_check, boolean politics_check,
+                                       boolean sports_check, boolean travels_check) {
+
+        error = 0;
+        if (query.isEmpty()) {
+            error = 3;
+        } else {
+            categories = selectCategories(arts_check, business_check, entrepreneurs_check,
+                    politics_check, sports_check, travels_check);
+            if (categories.equals("news_desk:()")) {
+                error = 4;
+            }
+
+
+        }
+    }
+
+    public void sendPeriodicsNotifications() {
+        WorkManager.getInstance().cancelAllWork();
+        WorkManager.getInstance().enqueue(periodicWorkRequest);
+    }
+
+    public void stopNotifications() {
+        WorkManager.getInstance().cancelAllWork();
+    }
 }
