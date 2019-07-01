@@ -117,6 +117,9 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             case (5):
                 toast(R.string.stopNotifications);
                 break;
+            case (6):
+                toast(R.string.startNotifications);
+                break;
             default:
                 if (toast != null) {
                     toast.cancel();

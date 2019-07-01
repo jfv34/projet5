@@ -9,7 +9,6 @@ import android.widget.CompoundButton;
 public class NotificationsActivity extends SearchActivity {
 
     NotificationsActivityPresenter presenter = new NotificationsActivityPresenter();
-    String categories;
     String query;
 
     @Override
@@ -44,6 +43,7 @@ public class NotificationsActivity extends SearchActivity {
                         toast(error);
                     } else {
                         presenter.sendPeriodicsNotifications();
+                        toast(6);
                     }
                 } else {
                     presenter.stopNotifications();
