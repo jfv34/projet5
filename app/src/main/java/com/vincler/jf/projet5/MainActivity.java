@@ -3,6 +3,7 @@ package com.vincler.jf.projet5;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -104,12 +105,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
                     resultSearch = response;
-                    Context context = MainActivity.this;
-                    Intent intent = new Intent(context, ResultSearchActivity.class);
 
+                    Intent intent = new Intent(MainActivity.this, ResultSearchActivity.class);
+                    Bundle b = new Bundle();
+                    b.putParcelableArrayList("data", (ArrayList<? extends Parcelable>) response.body().getResults()); //Your id
+                    intent.putExtras(b); //Put your id to your next Intent
+                    startActivity(intent);
 
-                    intent.putExtra("source", "MainActivity");
-                    context.startActivity(intent);
                 }
 
                 @Override

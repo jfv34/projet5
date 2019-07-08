@@ -11,6 +11,8 @@ import static android.support.test.espresso.action.ViewActions.swipeDown;
 import static android.support.test.espresso.action.ViewActions.swipeLeft;
 import static android.support.test.espresso.action.ViewActions.swipeRight;
 import static android.support.test.espresso.action.ViewActions.swipeUp;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 public class MainActivityTest {
@@ -19,6 +21,11 @@ public class MainActivityTest {
     public ActivityTestRule<MainActivity> activityTestRule =
             new ActivityTestRule<>(MainActivity.class);
 
+
+    @Test
+    public void toolbar_is_displayed() {
+        onView(withId(R.id.activity_main_toolbar)).check(matches(isDisplayed()));
+    }
 
     @Test
     public void horizontals_slides() {

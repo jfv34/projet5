@@ -13,6 +13,7 @@ public class NotificationsWorker extends Worker {
 
     NotificationsActivityPresenter presenter = new NotificationsActivityPresenter();
 
+
     public NotificationsWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
     }
@@ -22,10 +23,23 @@ public class NotificationsWorker extends Worker {
     public Result doWork() {
 
         presenter.retrofit();
-        sendNotification("Test-titre", "Test-message");
-        return Result.success();
+        int numberOfArticles = presenter.getNumberOfArticles();
+        String message = "";
 
+        if (numberOfArticles == 1) {
+            message = String.valueOf((R.string.notificationOneArticle));
+        }
+        if (numberOfArticles > 1) {
+            message = String.valueOf(R.string.notificationManyArticles1) + numberOfArticles +
+                    (R.string.notificationsManyArticles2);
+        }
+        if (numberOfArticles > 0) {
+            sendNotification("Votre recherche", message);
+        }
+
+        return Result.success();
     }
+
 
     public void sendNotification(String title, String message) {
         NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);

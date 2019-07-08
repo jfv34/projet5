@@ -1,6 +1,5 @@
 package com.vincler.jf.projet5;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,19 +13,11 @@ import java.util.List;
 
 public class ResultSearchActivity extends AppCompatActivity {
 
-
-    List resultSearch;
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = getIntent();
-        if (intent != null) {
-            ArticleParcelable articleParcelable = intent.getParcelableExtra("articleParcelable");
-            if (articleParcelable != null) {
-           resultSearch = articleParcelable.getResponse();
-            }
-        }
+
+        List<ArticleSearch> resultSearch = getIntent().getExtras().getParcelableArrayList("data");
 
 
         setContentView(R.layout.activity_resultsearch);
@@ -38,16 +29,13 @@ public class ResultSearchActivity extends AppCompatActivity {
         rv.setLayoutManager(new LinearLayoutManager(this));
 
 
-        if (resultSearch != null) {
-            if (resultSearch.isEmpty()) {
-                final TextView tv = findViewById(R.id.resultSearch_textView);
-                tv.setText(R.string.noresults);
+        if (resultSearch.isEmpty()) {
+            final TextView tv = findViewById(R.id.resultSearch_textView);
+            tv.setText(R.string.noresults);
 
-            } else {
-                List<ArticleSearch> articleSearch = resultSearch;
-                rv.setAdapter(new ArticleAdapter(this, articleSearch));
+        } else {
+            rv.setAdapter(new ArticleAdapter(this, resultSearch));
 
-            }
         }
 
 

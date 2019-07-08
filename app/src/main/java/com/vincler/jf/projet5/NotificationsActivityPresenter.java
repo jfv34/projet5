@@ -1,6 +1,7 @@
 package com.vincler.jf.projet5;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
@@ -36,6 +37,11 @@ class NotificationsActivityPresenter {
             new PeriodicWorkRequest.Builder(NotificationsWorker.class, REPEAT_INTERVAL_NOTIFICATIONS, TimeUnit.HOURS)
                     .addTag("periodic_work")
                     .build();
+    private int numberOfArticles=0;
+
+    public int getNumberOfArticles() {
+        return numberOfArticles;
+    }
 
     public byte getError() {
         return error;
@@ -62,12 +68,15 @@ class NotificationsActivityPresenter {
         String dateEndFormatAPI = dateToday();
         service.listSearch(query, categories, dateBeginFormatAPI, dateEndFormatAPI).enqueue(new Callback<ArticlesSearchResponse>() {
 
+
             @Override
             public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
 
                 if (!response.body().getResults().isEmpty()) {
 
                     List<ArticleSearch> articleSearch24hours = selectArticles(response);
+                    numberOfArticles = articleSearch24hours.size();
+
                 }
             }
 

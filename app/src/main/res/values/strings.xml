@@ -2,7 +2,6 @@
     <string name="app_name">MyNews</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="search_query_term">Search query term</string>
@@ -28,4 +27,7 @@
     <string name="noresults">Aucun résultat trouvé</string>
     <string name="stopNotifications">Désactivation des notifications</string>
     <string name="startNotifications">Notifications activées</string>
+    <string name="notificationOneArticle">L\'application MyNews a trouvé un nouvel article qui correspond à votre recherche.</string>
+    <string name="notificationManyArticles1">L\'application MyNews a trouvé</string>
+    <string name="notificationsManyArticles2">nouveaux articles qui correspondent à votre recherche.</string>
 </resources>

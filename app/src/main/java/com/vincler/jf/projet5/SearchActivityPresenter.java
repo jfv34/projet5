@@ -4,22 +4,18 @@ import android.annotation.SuppressLint;
 
 import com.vincler.jf.projet5.data.NewsService;
 import com.vincler.jf.projet5.models.ArrowClicked;
-import com.vincler.jf.projet5.models.ArticlesSearchResponse;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SearchActivityPresenter {
-    public static List resultSearch;
+
 
     private String dateBeginFormatAPI = "";
     private String dateEndFormatAPI = "";
@@ -28,10 +24,6 @@ public class SearchActivityPresenter {
     private String categories = "";
     private byte error = 0;
 
-
-    public static List getResultSearch() {
-        return resultSearch;
-    }
 
     public String getDateBeginDisplayed() {
         if (dateBeginDisplayed.isEmpty()) {
@@ -97,7 +89,7 @@ public class SearchActivityPresenter {
 
     public void search(String query, boolean arts_check,
                        boolean business_check, boolean entrepreneurs_check, boolean politics_check,
-                       boolean sports_check, boolean travels_check) {
+                       boolean sports_check, boolean travels_check, Callback callback) {
 
         error = 0;
         if (query.isEmpty()) {
@@ -113,19 +105,7 @@ public class SearchActivityPresenter {
                 dateEndFormatAPI = getDateEndFormatAPI();
 
                 if (error == 0) {
-                    service.listSearch(query, categories, dateBeginFormatAPI, dateEndFormatAPI).enqueue(new Callback<ArticlesSearchResponse>() {
-                        @Override
-                        public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
-                            if (response.body() != null) {
-                                resultSearch = response.body().getResults();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ArticlesSearchResponse> call, Throwable t) {
-                            t.printStackTrace();
-                        }
-                    });
+                    service.listSearch(query, categories, dateBeginFormatAPI, dateEndFormatAPI).enqueue(callback);
                 }
             }
         }
@@ -195,10 +175,10 @@ public class SearchActivityPresenter {
 
         String dateTodayFormatAPI = dateToday();
         if (!dateBeginFormatAPI.isEmpty() && Integer.valueOf(dateBeginFormatAPI) > Integer.valueOf(dateTodayFormatAPI)) {
-            return  2;
+            return 2;
         }
         if (!dateEndFormatAPI.isEmpty() && Integer.valueOf(dateEndFormatAPI) > Integer.valueOf(dateTodayFormatAPI)) {
-            return  2;
+            return 2;
         }
         return 0;
     }

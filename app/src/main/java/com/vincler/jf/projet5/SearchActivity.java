@@ -3,6 +3,7 @@ package com.vincler.jf.projet5;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -14,8 +15,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.vincler.jf.projet5.models.ArrowClicked;
+import com.vincler.jf.projet5.models.ArticlesSearchResponse;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SearchActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
@@ -61,19 +68,33 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 final CheckBox travels_check = findViewById(R.id.activity_search_checkbox_6);
 
                 presenter.search(editText.getText().toString(), arts_check.isChecked(), business_check.isChecked(),
-                        entrepreneurs_check.isChecked(), politics_check.isChecked(), sports_check.isChecked(), travels_check.isChecked());
+                        entrepreneurs_check.isChecked(), politics_check.isChecked(), sports_check.isChecked(),
+                        travels_check.isChecked(),new Callback<ArticlesSearchResponse>() {
+                            @Override
+                            public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
+                                if (response.body() != null) {
+                                    byte error = presenter.getError();
+                                    if (presenter.getError() != 0) {
+                                        toast(error);
+                                    } else {
 
-                byte error = presenter.getError();
-                if (presenter.getError() != 0) {
-                    toast(error);
-                } else {
-                    Intent intent = new Intent(SearchActivity.this, ResultSearchActivity.class);
-                    List resultSearch = presenter.getResultSearch();
-                    ArticleParcelable articleParcelable = new ArticleParcelable(resultSearch);
-                    intent.putExtra("articleParcelable", articleParcelable);
+                                        Intent intent = new Intent(SearchActivity.this, ResultSearchActivity.class);
+                                        Bundle b = new Bundle();
+                                        b.putParcelableArrayList("data", (ArrayList<? extends Parcelable>) response.body().getResults()); //Your id
+                                        intent.putExtras(b); //Put your id to your next Intent
+                                        startActivity(intent);
 
-                    startActivity(intent);
-                }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ArticlesSearchResponse> call, Throwable t) {
+                                t.printStackTrace();
+                            }
+                        });
+
+
             }
 
 
