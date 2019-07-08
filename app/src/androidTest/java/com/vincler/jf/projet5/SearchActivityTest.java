@@ -1,5 +1,6 @@
 package com.vincler.jf.projet5;
 
+import android.support.test.espresso.Espresso;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.rule.ActivityTestRule;
 import android.widget.DatePicker;
@@ -75,7 +76,7 @@ public class SearchActivityTest {
     public void datePicker_completee() {
         onView(withId(R.id.activity_search_arrowdown_left_bt)).perform(click());
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2017, 6, 30));
-        onView(withText("alert_dialog_text")).perform(pressBack());
+        Espresso.pressBack();
         onView(withId(R.id.activity_search_checkbox_1)).perform(click());
 
     }

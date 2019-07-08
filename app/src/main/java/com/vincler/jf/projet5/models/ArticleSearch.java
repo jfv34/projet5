@@ -5,12 +5,12 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class ArticleSearch extends Listable implements Parcelable {
 
-    private final Date date_object;
 
     @SerializedName("multimedia")
     public List<ArticleMedia> multimedia;
@@ -31,16 +31,7 @@ public class ArticleSearch extends Listable implements Parcelable {
     public String url;
 
 
-    protected ArticleSearch(Parcel in) {
-        // multimedia = new ArticleMedia(in.readString());
-        title = in.readString();
-        subCategory = in.readString();
-        category = in.readString();
-        url = in.readString();
-        date_object = new Date(in.readLong());
 
-
-    }
 
     public static final Creator<ArticleSearch> CREATOR = new Creator<ArticleSearch>() {
         @Override
@@ -97,12 +88,26 @@ public class ArticleSearch extends Listable implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
 
-        dest.writeString(getCover());
+        dest.writeList(multimedia);
         dest.writeString(title);
-        dest.writeLong(date_object.getTime());
+        dest.writeLong(date != null ? date.getTime() : -1);
         dest.writeString(subCategory);
         dest.writeString(category);
         dest.writeString(url);
+
+
+    }
+    protected ArticleSearch(Parcel in) {
+
+        multimedia = new ArrayList<>();
+        in.readList(multimedia, ArticleMedia.class.getClassLoader());
+        title = in.readString();
+        long tmpDate = in.readLong();
+        date = tmpDate == -1 ? null : new Date(tmpDate);
+        subCategory = in.readString();
+        category = in.readString();
+        url = in.readString();
+
 
 
     }
