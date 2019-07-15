@@ -1,7 +1,6 @@
 package com.vincler.jf.projet5;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
@@ -28,16 +27,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 class NotificationsActivityPresenter {
 
+
     private final int REPEAT_INTERVAL_NOTIFICATIONS = 24;
     private String query;
     private String categories;
+    private String dateBeginFormatAPI;
+    private String dateEndFormatAPI;
     private byte error = 0;
+
 
     final PeriodicWorkRequest periodicWorkRequest =
             new PeriodicWorkRequest.Builder(NotificationsWorker.class, REPEAT_INTERVAL_NOTIFICATIONS, TimeUnit.HOURS)
                     .addTag("periodic_work")
                     .build();
-    private int numberOfArticles=0;
+    private int numberOfArticles = 0;
 
     public int getNumberOfArticles() {
         return numberOfArticles;
@@ -64,8 +67,6 @@ class NotificationsActivityPresenter {
                 .build();
         final NewsService service = retrofit.create(NewsService.class);
 
-        String dateBeginFormatAPI = dateYesterday();
-        String dateEndFormatAPI = dateToday();
         service.listSearch(query, categories, dateBeginFormatAPI, dateEndFormatAPI).enqueue(new Callback<ArticlesSearchResponse>() {
 
 
@@ -87,6 +88,7 @@ class NotificationsActivityPresenter {
         });
     }
 
+
     public List<ArticleSearch> selectArticles(Response<ArticlesSearchResponse> response) {
         List<ArticleSearch> articleSearch = response.body().getResults();
         List<ArticleSearch> articleSearch24hours = new ArrayList<>();
@@ -104,6 +106,11 @@ class NotificationsActivityPresenter {
             }
         }
         return articleSearch24hours;
+    }
+
+    public void configureDates() {
+        dateBeginFormatAPI = dateYesterday();
+        dateEndFormatAPI = dateToday();
     }
 
     private String dateYesterday() {

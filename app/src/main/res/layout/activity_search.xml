@@ -16,8 +16,9 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
             app:popupTheme="@style/Theme.AppCompat.Light.NoActionBar"
-            app:title="Search Articles"
-            app:titleTextColor="#ffffff" />
+            app:theme="@style/ToolbarColoredBackArrow"
+            app:titleTextColor="#ffffff"
+            />
 
     </android.support.design.widget.AppBarLayout>
 

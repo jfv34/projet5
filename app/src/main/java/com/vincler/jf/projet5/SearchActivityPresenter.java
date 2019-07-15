@@ -52,14 +52,14 @@ public class SearchActivityPresenter {
     }
 
     public String getDateBeginFormatAPI() {
-        if (dateBeginFormatAPI == null | dateBeginFormatAPI.isEmpty()) {
+        if (dateBeginFormatAPI == null || dateBeginFormatAPI.isEmpty()) {
             return null;
         }
         return dateBeginFormatAPI;
     }
 
     public String getDateEndFormatAPI() {
-        if (dateEndFormatAPI == null | dateEndFormatAPI.isEmpty()) {
+        if (dateEndFormatAPI == null || dateEndFormatAPI.isEmpty()) {
             return null;
         }
         return dateEndFormatAPI;
@@ -168,19 +168,25 @@ public class SearchActivityPresenter {
     public byte verifyDates() {
 
 
-        if (!dateBeginFormatAPI.isEmpty() && !dateEndFormatAPI.isEmpty()
-                && Integer.valueOf(dateBeginFormatAPI) > Integer.valueOf(dateEndFormatAPI)) {
-            return 1;
-        }
+            if (!isDateNul() && !dateBeginFormatAPI.isEmpty() && !dateEndFormatAPI.isEmpty()
+                    && Integer.valueOf(dateBeginFormatAPI) > Integer.valueOf(dateEndFormatAPI)) {
+                return 1;
+            }
+
+
 
         String dateTodayFormatAPI = dateToday();
-        if (!dateBeginFormatAPI.isEmpty() && Integer.valueOf(dateBeginFormatAPI) > Integer.valueOf(dateTodayFormatAPI)) {
+        if (!isDateNul()&&!dateBeginFormatAPI.isEmpty() && Integer.valueOf(dateBeginFormatAPI) > Integer.valueOf(dateTodayFormatAPI)) {
             return 2;
         }
-        if (!dateEndFormatAPI.isEmpty() && Integer.valueOf(dateEndFormatAPI) > Integer.valueOf(dateTodayFormatAPI)) {
+        if (!isDateNul()&&!dateEndFormatAPI.isEmpty() && Integer.valueOf(dateEndFormatAPI) > Integer.valueOf(dateTodayFormatAPI)) {
             return 2;
         }
         return 0;
+    }
+
+    private boolean isDateNul() {
+        return dateBeginFormatAPI == null || dateEndFormatAPI == null;
     }
 }
 

@@ -8,6 +8,8 @@ import org.junit.Test;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 public class NotificationsActivityTest {
@@ -16,6 +18,10 @@ public class NotificationsActivityTest {
     public ActivityTestRule<NotificationsActivity> activityTestRule =
             new ActivityTestRule<>(NotificationsActivity.class);
 
+    @Test
+    public void toolbar_is_displayed() {
+        onView(withId(R.id.activity_notifications_toolbar)).check(matches(isDisplayed()));
+    }
 
     @Test
     public void all_checkboxes_checked() {

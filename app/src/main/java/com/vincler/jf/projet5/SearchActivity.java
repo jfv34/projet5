@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -18,7 +19,7 @@ import com.vincler.jf.projet5.models.ArrowClicked;
 import com.vincler.jf.projet5.models.ArticlesSearchResponse;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,6 +28,7 @@ import retrofit2.Response;
 public class SearchActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
     SearchActivityPresenter presenter = new SearchActivityPresenter();
+    Toolbar toolbar;
     ArrowClicked arrowClicked;
     Toast toast = null;
 
@@ -34,6 +36,9 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        configureToolbar("Search");
+
 
         ImageButton leftArrowBt = findViewById(R.id.activity_search_arrowdown_left_bt);
         leftArrowBt.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +74,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
                 presenter.search(editText.getText().toString(), arts_check.isChecked(), business_check.isChecked(),
                         entrepreneurs_check.isChecked(), politics_check.isChecked(), sports_check.isChecked(),
-                        travels_check.isChecked(),new Callback<ArticlesSearchResponse>() {
+                        travels_check.isChecked(), new Callback<ArticlesSearchResponse>() {
                             @Override
                             public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
                                 if (response.body() != null) {
@@ -93,13 +98,31 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                                 t.printStackTrace();
                             }
                         });
-
-
             }
 
 
         });
     }
+
+    void configureToolbar(String activity) {
+        if (activity.equals("Search")) {
+            this.toolbar = (findViewById(R.id.activity_search_toolbar));
+            toolbar.setTitle(R.string.searchArticles);
+        } else {
+            this.toolbar = (findViewById(R.id.activity_notifications_toolbar));
+            toolbar.setTitle("Notifications");
+        }
+
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+    }
+
 
     private void displayDate(ArrowClicked arrowClicked) {
 

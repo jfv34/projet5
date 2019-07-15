@@ -30,4 +30,7 @@
     <string name="notificationOneArticle">L\'application MyNews a trouvé un nouvel article qui correspond à votre recherche.</string>
     <string name="notificationManyArticles1">L\'application MyNews a trouvé</string>
     <string name="notificationsManyArticles2">nouveaux articles qui correspondent à votre recherche.</string>
+    <string name="search_articles">Search Articles</string>
+    <string name="searchArticles">Search Articles</string>
+    <string name="searchresults">Search results</string>
 </resources>
