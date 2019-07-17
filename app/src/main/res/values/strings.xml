@@ -33,4 +33,5 @@
     <string name="search_articles">Search Articles</string>
     <string name="searchArticles">Search Articles</string>
     <string name="searchresults">Search results</string>
+    <string name="article">Article</string>
 </resources>

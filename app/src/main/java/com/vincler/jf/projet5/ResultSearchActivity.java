@@ -20,11 +20,12 @@ public class ResultSearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //configureToolbar();
+
         List<ArticleSearch> resultSearch = getIntent().getExtras().getParcelableArrayList("data");
 
 
         setContentView(R.layout.activity_resultsearch);
+        configureToolbar();
 
         final RecyclerView rv = findViewById(R.id.resultSearch_recyclerView);
         rv.setLayoutManager(new LinearLayoutManager(this));
