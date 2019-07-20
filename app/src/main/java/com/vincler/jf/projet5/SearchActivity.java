@@ -72,25 +72,24 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 final CheckBox sports_check = findViewById(R.id.activity_search_checkbox_5);
                 final CheckBox travels_check = findViewById(R.id.activity_search_checkbox_6);
 
+
                 presenter.search(editText.getText().toString(), arts_check.isChecked(), business_check.isChecked(),
                         entrepreneurs_check.isChecked(), politics_check.isChecked(), sports_check.isChecked(),
                         travels_check.isChecked(), new Callback<ArticlesSearchResponse>() {
                             @Override
                             public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
+
                                 if (response.body() != null) {
-                                    byte error = presenter.getError();
-                                    if (presenter.getError() != 0) {
-                                        toast(error);
-                                    } else {
 
-                                        Intent intent = new Intent(SearchActivity.this, ResultSearchActivity.class);
-                                        Bundle b = new Bundle();
-                                        b.putParcelableArrayList("data", (ArrayList<? extends Parcelable>) response.body().getResults()); //Your id
-                                        intent.putExtras(b); //Put your id to your next Intent
-                                        startActivity(intent);
 
-                                    }
+                                    Intent intent = new Intent(SearchActivity.this, ResultSearchActivity.class);
+                                    Bundle b = new Bundle();
+                                    b.putParcelableArrayList("data", (ArrayList<? extends Parcelable>) response.body().getResults()); //Your id
+                                    intent.putExtras(b); //Put your id to your next Intent
+                                    startActivity(intent);
+
                                 }
+
                             }
 
                             @Override
@@ -98,6 +97,10 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                                 t.printStackTrace();
                             }
                         });
+                byte error = presenter.getError();
+                if (error != 0) {
+                    toast(error);
+                }
             }
 
 

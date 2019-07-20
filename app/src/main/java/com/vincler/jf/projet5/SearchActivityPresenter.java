@@ -1,6 +1,7 @@
 package com.vincler.jf.projet5;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 
 import com.vincler.jf.projet5.data.NewsService;
 import com.vincler.jf.projet5.models.ArrowClicked;
@@ -40,6 +41,7 @@ public class SearchActivityPresenter {
     }
 
     public byte getError() {
+        Log.i("TAG_error", String.valueOf(error));
         return error;
     }
 
@@ -94,6 +96,8 @@ public class SearchActivityPresenter {
         error = 0;
         if (query.isEmpty()) {
             error = 3;
+            Log.i("TAG_error", String.valueOf(error));
+
         } else {
             categories = selectCategories(arts_check, business_check, entrepreneurs_check,
                     politics_check, sports_check, travels_check);
