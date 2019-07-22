@@ -84,8 +84,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
                                     Intent intent = new Intent(SearchActivity.this, ResultSearchActivity.class);
                                     Bundle b = new Bundle();
-                                    b.putParcelableArrayList("data", (ArrayList<? extends Parcelable>) response.body().getResults()); //Your id
-                                    intent.putExtras(b); //Put your id to your next Intent
+                                    b.putParcelableArrayList("data", (ArrayList<? extends Parcelable>) response.body().getResults());
+                                    intent.putExtras(b);
                                     startActivity(intent);
 
                                 }

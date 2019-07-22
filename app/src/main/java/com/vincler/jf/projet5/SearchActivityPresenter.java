@@ -67,10 +67,6 @@ public class SearchActivityPresenter {
         return dateEndFormatAPI;
     }
 
-    public String getCategories() {
-        return categories;
-    }
-
 
     final NewsService service = new Retrofit.Builder()
             .baseUrl("http://api.nytimes.com/svc/")
@@ -96,7 +92,6 @@ public class SearchActivityPresenter {
         error = 0;
         if (query.isEmpty()) {
             error = 3;
-            Log.i("TAG_error", String.valueOf(error));
 
         } else {
             categories = selectCategories(arts_check, business_check, entrepreneurs_check,
@@ -172,18 +167,17 @@ public class SearchActivityPresenter {
     public byte verifyDates() {
 
 
-            if (!isDateNul() && !dateBeginFormatAPI.isEmpty() && !dateEndFormatAPI.isEmpty()
-                    && Integer.valueOf(dateBeginFormatAPI) > Integer.valueOf(dateEndFormatAPI)) {
-                return 1;
-            }
-
+        if (!isDateNul() && !dateBeginFormatAPI.isEmpty() && !dateEndFormatAPI.isEmpty()
+                && Integer.valueOf(dateBeginFormatAPI) > Integer.valueOf(dateEndFormatAPI)) {
+            return 1;
+        }
 
 
         String dateTodayFormatAPI = dateToday();
-        if (!isDateNul()&&!dateBeginFormatAPI.isEmpty() && Integer.valueOf(dateBeginFormatAPI) > Integer.valueOf(dateTodayFormatAPI)) {
+        if (!isDateNul() && !dateBeginFormatAPI.isEmpty() && Integer.valueOf(dateBeginFormatAPI) > Integer.valueOf(dateTodayFormatAPI)) {
             return 2;
         }
-        if (!isDateNul()&&!dateEndFormatAPI.isEmpty() && Integer.valueOf(dateEndFormatAPI) > Integer.valueOf(dateTodayFormatAPI)) {
+        if (!isDateNul() && !dateEndFormatAPI.isEmpty() && Integer.valueOf(dateEndFormatAPI) > Integer.valueOf(dateTodayFormatAPI)) {
             return 2;
         }
         return 0;

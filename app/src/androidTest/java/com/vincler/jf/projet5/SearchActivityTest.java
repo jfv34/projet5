@@ -39,6 +39,7 @@ public class SearchActivityTest {
     public void button_clicked() {
 
         onView(withId(R.id.activity_search_button)).perform(click());
+
         SearchActivityPresenter presenter = new SearchActivityPresenter();
         Assert.assertEquals(2, presenter.getError());
     }

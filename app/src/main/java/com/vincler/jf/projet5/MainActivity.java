@@ -31,7 +31,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static Response<ArticlesSearchResponse> resultSearch;
+
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -103,12 +103,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
 
 
-                    resultSearch = response;
-
                     Intent intent = new Intent(MainActivity.this, ResultSearchActivity.class);
                     Bundle b = new Bundle();
-                    b.putParcelableArrayList("data", (ArrayList<? extends Parcelable>) response.body().getResults()); //Your id
-                    intent.putExtras(b); //Put your id to your next Intent
+                    b.putParcelableArrayList("data", (ArrayList<? extends Parcelable>) response.body().getResults());
+                    intent.putExtras(b);
                     startActivity(intent);
 
                 }
@@ -153,20 +151,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    private void configureViewPagerAndTabs() {
-        ViewPager pager = findViewById(R.id.activity_main_viewpager);
-        List<ArticleListType> listTypesArticles = new ArrayList<>();
-
-        listTypesArticles.add(ArticleListType.TOP_STORIES);
-        listTypesArticles.add(ArticleListType.MOST_POPULAR);
-        listTypesArticles.add(ArticleListType.BUSINESS);
-
-        pager.setAdapter(new PageAdapter(getSupportFragmentManager(), listTypesArticles));
-        TabLayout tabs = findViewById(R.id.activity_main_tabs);
-        tabs.setupWithViewPager(pager);
-        tabs.setTabMode(TabLayout.MODE_FIXED);
-    }
-
     private void configureDrawerLayout() {
         this.drawerLayout = findViewById(R.id.activity_main_drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -179,6 +163,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void configureNavigationView() {
         this.navigationView = findViewById(R.id.activity_main_nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void configureViewPagerAndTabs() {
+        ViewPager pager = findViewById(R.id.activity_main_viewpager);
+        List<ArticleListType> listTypesArticles = new ArrayList<>();
+
+        listTypesArticles.add(ArticleListType.TOP_STORIES);
+        listTypesArticles.add(ArticleListType.MOST_POPULAR);
+        listTypesArticles.add(ArticleListType.BUSINESS);
+
+        pager.setAdapter(new PageAdapter(getSupportFragmentManager(), listTypesArticles));
+        TabLayout tabs = findViewById(R.id.activity_main_tabs);
+        tabs.setupWithViewPager(pager);
+        tabs.setTabMode(TabLayout.MODE_FIXED);
     }
 
 }

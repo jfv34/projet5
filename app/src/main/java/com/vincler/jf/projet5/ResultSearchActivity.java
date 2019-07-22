@@ -23,7 +23,6 @@ public class ResultSearchActivity extends AppCompatActivity {
 
         List<ArticleSearch> resultSearch = getIntent().getExtras().getParcelableArrayList("data");
 
-
         setContentView(R.layout.activity_resultsearch);
         configureToolbar();
 
