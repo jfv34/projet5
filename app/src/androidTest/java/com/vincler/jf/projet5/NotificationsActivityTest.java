@@ -49,10 +49,8 @@ public class NotificationsActivityTest {
     public void switch_checked_whithout_query() {
         onView(withId(R.id.activity_search_checkbox_1)).perform(click());
         onView(withId(R.id.activity_notifications_switch)).perform(click());
-        //onView(withText(R.string.search_query_term)).inRoot(withDecorView(not(NotificationsActivity.class.getActivity().getWindows().getDecorView())).check(matches(isDisplayed()));
-    }
 
-    // onView(withText(R.string.toast_text)).inRoot(withDecorView(not(mActivityRule.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
+     }
 
     @Test
     public void switch_checked_whithout_checkbox_checked() {

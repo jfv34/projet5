@@ -18,11 +18,13 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.core.IsNot.not;
 
 public class SearchActivityTest {
 
@@ -74,8 +76,7 @@ public class SearchActivityTest {
     public void switch_checked_whithout_query() {
         onView(withId(R.id.activity_search_checkbox_1)).perform(click());
         onView(withId(R.id.activity_search_button)).perform(click());
-        SearchActivityPresenter presenter = new SearchActivityPresenter();
-        Assert.assertEquals(3, presenter.getError());
+        onView(withText(R.string.enterAtLeastOneKeyWord)).inRoot(withDecorView(not(activityTestRule.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
     }
 
     @Test
