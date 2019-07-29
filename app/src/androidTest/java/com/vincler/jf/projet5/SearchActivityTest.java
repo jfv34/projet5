@@ -3,7 +3,6 @@ package com.vincler.jf.projet5;
 import android.os.SystemClock;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.contrib.PickerActions;
-import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.widget.DatePicker;
 
@@ -16,8 +15,6 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.intent.Intents.intended;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -42,8 +39,8 @@ public class SearchActivityTest {
 
         onView(withId(R.id.activity_search_button)).perform(click());
 
-        SearchActivityPresenter presenter = new SearchActivityPresenter();
-        Assert.assertEquals(2, presenter.getError());
+        onView(withText(R.string.enterAtLeastOneKeyWord)).inRoot(withDecorView(not(activityTestRule.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
+
     }
 
     @Test
@@ -87,9 +84,7 @@ public class SearchActivityTest {
 
         onView(withId(R.id.activity_search_query)).check(matches(withText("world")));
         onView(withId(R.id.activity_search_checkbox_1)).check(matches(isChecked()));
-        SystemClock.sleep(4000);
-        Intents.init();
-        intended(hasComponent(ResultSearchActivity.class.getName()));
+
 
 
     }

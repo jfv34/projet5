@@ -85,6 +85,8 @@ public class NotificationsActivity extends SearchActivity {
                     }
                 } else {
                     presenter.stopNotifications();
+
+                    sharedPreferences.edit().clear().apply();
                     toast(5);
 
                 }

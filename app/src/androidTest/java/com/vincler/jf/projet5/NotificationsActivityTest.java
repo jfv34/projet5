@@ -9,8 +9,11 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.core.IsNot.not;
 
 public class NotificationsActivityTest {
 
@@ -39,16 +42,23 @@ public class NotificationsActivityTest {
     }
 
     @Test
-    public void switch_checked_after_query_and_checkbox_checked() {
+    public void toast_when_switch_checked_after_query_and_checkbox_checked() {
         onView(withId(R.id.activity_search_query)).perform(typeText("test"));
         onView(withId(R.id.activity_search_checkbox_1)).perform(click());
         onView(withId(R.id.activity_notifications_switch)).perform(click());
+        onView(withText(R.string.startNotifications)).inRoot(withDecorView(not(activityTestRule.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
+        onView(withId(R.id.activity_notifications_switch)).perform(click());
+        onView(withText(R.string.stopNotifications)).inRoot(withDecorView(not(activityTestRule.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
+
+
     }
 
     @Test
-    public void switch_checked_whithout_query() {
+    public void toast_when_switch_checked_whithout_query() {
         onView(withId(R.id.activity_search_checkbox_1)).perform(click());
         onView(withId(R.id.activity_notifications_switch)).perform(click());
+        onView(withText(R.string.enterAtLeastOneKeyWord)).inRoot(withDecorView(not(activityTestRule.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
+
 
      }
 
@@ -56,6 +66,8 @@ public class NotificationsActivityTest {
     public void switch_checked_whithout_checkbox_checked() {
         onView(withId(R.id.activity_search_query)).perform(typeText("test"));
         onView(withId(R.id.activity_notifications_switch)).perform(click());
+        onView(withText(R.string.checkAtLeastOneCategory)).inRoot(withDecorView(not(activityTestRule.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
+
     }
 
 
