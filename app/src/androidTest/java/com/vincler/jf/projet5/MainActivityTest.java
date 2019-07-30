@@ -2,17 +2,21 @@ package com.vincler.jf.projet5;
 
 import android.os.SystemClock;
 import android.support.test.espresso.Espresso;
+import android.support.test.espresso.UiController;
+import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.espresso.contrib.PickerActions;
+import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
+import android.view.View;
 import android.widget.DatePicker;
 
+import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
-import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -26,8 +30,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.AllOf.allOf;
 
 public class MainActivityTest {
@@ -35,6 +37,31 @@ public class MainActivityTest {
     @Rule
     public ActivityTestRule<MainActivity> activityTestRule =
             new ActivityTestRule<>(MainActivity.class);
+
+
+    public static class MyViewAction {
+
+        public static ViewAction clickChildViewWithId(final int id) {
+            return new ViewAction() {
+                @Override
+                public Matcher<View> getConstraints() {
+                    return null;
+                }
+
+                @Override
+                public String getDescription() {
+                    return "Click on a child view with specified id.";
+                }
+
+                @Override
+                public void perform(UiController uiController, View view) {
+                    View v = view.findViewById(id);
+                    v.performClick();
+                }
+            };
+        }
+
+    }
 
 
     @Test
@@ -90,10 +117,9 @@ public class MainActivityTest {
         onView(withId(R.id.activity_search_checkbox_4)).perform(click());
         onView(withId(R.id.activity_search_button)).perform(click());
         SystemClock.sleep(2000);
-        onView(withId(R.id.resultSearch_recyclerView)).perform(swipeUp());
-        onView(withId(R.id.resultSearch_recyclerView)).perform(swipeUp());
-        onData(allOf(is(instanceOf(String.class)), is("c"))).perform(click());
-        // onView(withText("c")).check(matches(isDisplayed()));
+        onView(withId(R.id.resultSearch_recyclerView)).perform(
+                RecyclerViewActions.actionOnItemAtPosition(7, MyViewAction.clickChildViewWithId(R.id.item_article_title)));
+        SystemClock.sleep(4000);
 
     }
 
@@ -101,18 +127,22 @@ public class MainActivityTest {
     public void various_tests_2() {
         onView(withId(R.id.activity_main_viewpager)).perform(swipeLeft());
         onView(withId(R.id.activity_main_viewpager)).perform(swipeLeft());
-        onView(withId(R.id.activity_main_viewpager)).perform(swipeUp());
-        onView(withId(R.id.activity_main_viewpager)).perform(swipeUp());
+        SystemClock.sleep(2000);
+        onView(allOf(withId(R.id.fragment_page_articles), isDisplayed())).perform(RecyclerViewActions.actionOnItemAtPosition(7, MyViewAction.clickChildViewWithId(R.id.item_article_title)));
+        SystemClock.sleep(4000);
+
     }
 
     @Test
     public void various_tests_3() {
 
         onView(withId(R.id.activity_main_drawer_layout)).perform(DrawerActions.open());
-        SystemClock.sleep(4000);
+        SystemClock.sleep(2000);
         onView(withText("Arts")).perform(click());
-        //onView(withId(R.id.activity_main_drawer_3)).perform(click());
-
+        SystemClock.sleep(2000);
+        onView(withId(R.id.resultSearch_recyclerView)).perform(
+                RecyclerViewActions.actionOnItemAtPosition(7, MyViewAction.clickChildViewWithId(R.id.item_article_title)));
+        SystemClock.sleep(4000);
 
     }
 
@@ -135,8 +165,9 @@ public class MainActivityTest {
         Espresso.pressBack();
         onView(withId(R.id.activity_search_button)).perform(click());
         SystemClock.sleep(2000);
-        onView(withId(R.id.resultSearch_recyclerView)).perform(swipeUp());
-        onView(withId(R.id.resultSearch_recyclerView)).perform(swipeUp());
+        onView(withId(R.id.resultSearch_recyclerView)).perform(
+                RecyclerViewActions.actionOnItemAtPosition(7, MyViewAction.clickChildViewWithId(R.id.item_article_title)));
+        SystemClock.sleep(4000);
     }
 
     @Test

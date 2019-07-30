@@ -48,7 +48,6 @@
         android:layout_marginLeft="10dp"
         android:layout_marginBottom="25dp"
         android:maxLines="2"
-        android:text="Android 10.0 Q: What's new and all you need to know about the update"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
