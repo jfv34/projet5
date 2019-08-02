@@ -1,3 +1,7 @@
+addons:
+  apt:
+    packages:
+      - lynx
 language: android
 jdk: oraclejdk8
 env:
@@ -26,3 +30,6 @@ before_install:
   - yes | sdkmanager "build-tools;25.0.3"
 script:
   - ./gradlew build check
+  after_failure:
+  - if [ -f /home/travis/build/leandroBorgesFerreira/MoreCLoseButton/app/build/outputs/lint-results-debug.html ]; then lynx -dump /home/travis/build/leandroBorgesFerreira/MoreCLoseButton/app/build/outputs/lint-results-debug.html; fi
+  
