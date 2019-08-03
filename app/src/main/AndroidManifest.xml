@@ -23,6 +23,8 @@
         <activity android:name="com.vincler.jf.projet5.SearchActivity"></activity>
         <activity android:name="com.vincler.jf.projet5.NotificationsActivity"></activity>
         <activity android:name="com.vincler.jf.projet5.WebActivity"></activity>
+        <activity android:name="com.vincler.jf.projet5.HelpActivity"></activity>
+        <activity android:name="com.vincler.jf.projet5.AboutActivity"></activity>
         <activity android:name=".ResultSearchActivity"></activity>
 
     </application>

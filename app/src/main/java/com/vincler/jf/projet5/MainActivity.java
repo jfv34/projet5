@@ -140,6 +140,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intent2);
                 return true;
 
+            case R.id.menu_activity_main_help:
+                Intent intent3 = new Intent(MainActivity.this, HelpActivity.class);
+                startActivity(intent3);
+                return true;
+
+            case R.id.menu_activity_main_about:
+                Intent intent4 = new Intent(MainActivity.this, AboutActivity.class);
+                startActivity(intent4);
+                return true;
+
+
+
             default:
                 return super.onOptionsItemSelected(item);
         }
