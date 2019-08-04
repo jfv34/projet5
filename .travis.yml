@@ -26,4 +26,3 @@ before_install:
   - yes | sdkmanager "build-tools;25.0.3"
 script:
   - ./gradlew build check
-  - ./gradlew connectedAndroidTest coveralls
