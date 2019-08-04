@@ -1,4 +1,14 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.github.kt3k.coveralls'
+
+coveralls {
+    jacocoReportPath = "${buildDir}/reports/coverage/debug/report.xml"
+}
+
+tasks.coveralls {
+    dependsOn 'connectedAndroidTest'
+    onlyIf { System.env.'CI' }
+}
 
 android {
     compileSdkVersion 28
@@ -15,15 +25,14 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-        debug{
+        debug {
             testCoverageEnabled true
         }
     }
 }
 
 repositories {
-    mavenCentral()           // for Bumptech-Glide
-
+    mavenCentral()
     google()
 }
 
@@ -45,6 +54,6 @@ dependencies {
     testImplementation "org.mockito:mockito-core:2.27.0"
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
     implementation 'android.arch.work:work-runtime:1.0.1'
-
-
 }
+
+
