@@ -102,16 +102,7 @@ public class SearchActivityTest {
         onView(withId(R.id.activity_search_arrowdown_right_bt)).perform(click());
     }
 
-    @Test
-    public void datePicker_completee() {
-        onView(withId(R.id.activity_search_arrowdown_left_bt)).perform(click());
-        onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2017, 6, 30));
-        Espresso.pressBack();
-        onView(withId(R.id.activity_search_checkbox_1)).perform(click());
 
-        SearchActivityPresenter presenter = new SearchActivityPresenter();
-        Assert.assertEquals("30/06/2017", presenter.getDateBeginDisplayed());
-    }
 
 
 }
