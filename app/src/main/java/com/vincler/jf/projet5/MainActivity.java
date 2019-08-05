@@ -3,6 +3,7 @@ package com.vincler.jf.projet5;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -31,11 +32,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         String category = "";
         int id = item.getItemId();
         switch (id) {
@@ -101,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             service.listCategorySearch(category).enqueue(new Callback<ArticlesSearchResponse>() {
                 @Override
                 public void onResponse(Call<ArticlesSearchResponse> call, Response<ArticlesSearchResponse> response) {
-
 
                     Intent intent = new Intent(MainActivity.this, ResultSearchActivity.class);
                     Bundle b = new Bundle();
@@ -150,8 +146,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intent4);
                 return true;
 
-
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -162,18 +156,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
     }
 
-
     private void configureDrawerLayout() {
         this.drawerLayout = findViewById(R.id.activity_main_drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-
     }
 
     private void configureNavigationView() {
-        this.navigationView = findViewById(R.id.activity_main_nav_view);
+        NavigationView navigationView = findViewById(R.id.activity_main_nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -190,5 +182,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tabs.setupWithViewPager(pager);
         tabs.setTabMode(TabLayout.MODE_FIXED);
     }
-
 }

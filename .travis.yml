@@ -35,6 +35,8 @@ before_script:
     - emulator -avd test -no-skin -no-audio -no-window &
     - android-wait-for-emulator
     - adb shell input keyevent 82 &
+    - mkdir -p "$ANDROID_HOME/licenses"
+    - cp ./google-licenses/* "$ANDROID_HOME/licenses/"
 script:
   - ./gradlew build check
   - ./gradlew connectedAndroidTest coveralls

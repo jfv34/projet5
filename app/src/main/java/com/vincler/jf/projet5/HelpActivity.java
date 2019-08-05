@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import java.util.Objects;
 
@@ -16,6 +17,13 @@ public class HelpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_help);
 
         configureToolbar();
+        displayText();
+
+    }
+
+    private void displayText() {
+        TextView tv = findViewById(R.id.activity_help_textView);
+        tv.setText(getString(R.string.helptext));
     }
 
     void configureToolbar() {

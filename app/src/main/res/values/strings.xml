@@ -35,4 +35,7 @@
     <string name="searchresults">Search results</string>
     <string name="article">Article</string>
     <string name="help">Help</string>
+    <string name="about">About</string>
+    <string name="helptext">Bienvenue sur MyNew.   Sur cette application vous pouvez:  - Naviguer entre les onglets pour consulter les articles récents des catégories \"Top stories\", \"Most popular\" et \"Business\". - Cliquer en haut à gauche pour accèder à un menu, puis choisir l\'une des six catégories afficher. - Cliquer sur la loupe pour rechercher des articles selon des critères. - Cliquer en haut à droite pour accèder à un sous-menu, puis sur \"notifications\" pour recevoir toutes les 24 heures des notifications sur les nouveaux articles répondants à vos critères de recherche.</string>
+    <string name="abouttext">Aout 2019, Projet 5 d\'OpenClassRooms, Jean-François Vincler</string>
 </resources>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.vincler.jf.projet5">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -11,7 +12,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
 
         <activity android:name="com.vincler.jf.projet5.MainActivity">
             <intent-filter>
@@ -20,12 +22,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.vincler.jf.projet5.SearchActivity"></activity>
-        <activity android:name="com.vincler.jf.projet5.NotificationsActivity"></activity>
-        <activity android:name="com.vincler.jf.projet5.WebActivity"></activity>
-        <activity android:name="com.vincler.jf.projet5.HelpActivity"></activity>
-        <activity android:name="com.vincler.jf.projet5.AboutActivity"></activity>
-        <activity android:name=".ResultSearchActivity"></activity>
+        <activity android:name="com.vincler.jf.projet5.SearchActivity" />
+        <activity android:name="com.vincler.jf.projet5.NotificationsActivity" />
+        <activity android:name="com.vincler.jf.projet5.WebActivity" />
+        <activity android:name="com.vincler.jf.projet5.HelpActivity" />
+        <activity android:name="com.vincler.jf.projet5.AboutActivity" />
+        <activity android:name="com.vincler.jf.projet5.ResultSearchActivity" />
 
     </application>
 
