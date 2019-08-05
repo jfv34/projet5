@@ -1,5 +1,6 @@
 package com.vincler.jf.projet5;
 
+import android.os.SystemClock;
 import android.support.test.rule.ActivityTestRule;
 
 import org.junit.Rule;
@@ -43,10 +44,12 @@ public class NotificationsActivityTest {
 
     @Test
     public void toast_when_switch_checked_after_query_and_checkbox_checked() {
+        SystemClock.sleep(4000);
         onView(withId(R.id.activity_search_query)).perform(typeText("test"));
         onView(withId(R.id.activity_search_checkbox_1)).perform(click());
         onView(withId(R.id.activity_notifications_switch)).perform(click());
         onView(withText(R.string.startNotifications)).inRoot(withDecorView(not(activityTestRule.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
+        SystemClock.sleep(4000);
         onView(withId(R.id.activity_notifications_switch)).perform(click());
         onView(withText(R.string.stopNotifications)).inRoot(withDecorView(not(activityTestRule.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
 
@@ -55,6 +58,7 @@ public class NotificationsActivityTest {
 
     @Test
     public void toast_when_switch_checked_whithout_query() {
+        SystemClock.sleep(4000);
         onView(withId(R.id.activity_search_checkbox_1)).perform(click());
         onView(withId(R.id.activity_notifications_switch)).perform(click());
         onView(withText(R.string.enterAtLeastOneKeyWord)).inRoot(withDecorView(not(activityTestRule.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
@@ -64,6 +68,7 @@ public class NotificationsActivityTest {
 
     @Test
     public void switch_checked_whithout_checkbox_checked() {
+        SystemClock.sleep(4000);
         onView(withId(R.id.activity_search_query)).perform(typeText("test"));
         onView(withId(R.id.activity_notifications_switch)).perform(click());
         onView(withText(R.string.checkAtLeastOneCategory)).inRoot(withDecorView(not(activityTestRule.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
