@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -15,17 +16,19 @@
             android:background="@color/colorPrimary"
             app:popupTheme="@style/Theme.AppCompat.Light.NoActionBar"
             app:theme="@style/ToolbarColoredBackArrow"
-            app:titleTextColor="#ffffff"
-            />
+            app:titleTextColor="#ffffff" />
 
     </android.support.design.widget.AppBarLayout>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <TextView
         android:id="@+id/activity_help_textView"
-        android:text="test"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:textColor="#000000"
-         />
-
+        android:textSize="30sp" />
+    </ScrollView>
 </android.support.v7.widget.LinearLayoutCompat>
