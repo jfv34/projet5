@@ -27,6 +27,7 @@ android:
     - android-22
     - sys-img-armeabi-v7a-android-22
 before_install:
+  - pip install --user coveralls    #Install codecov
   - yes | sdkmanager "platforms;android-25"
   - yes | sdkmanager "build-tools;25.0.3"
 before_script:
@@ -35,6 +36,7 @@ before_script:
     - android-wait-for-emulator
     - adb shell input keyevent 82 &
     - mkdir -p "$ANDROID_HOME/licenses"
+    - cp ./google-licenses/* "$ANDROID_HOME/licenses/"
 script:
   - ./gradlew build check
   - ./gradlew connectedAndroidTest coveralls
